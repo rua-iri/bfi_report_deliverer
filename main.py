@@ -2,6 +2,7 @@ import logging
 import requests
 from bs4 import BeautifulSoup
 import constants
+import helpers
 
 logger = logging.getLogger(__name__)
 logger.setLevel(level=logging.DEBUG)
@@ -10,11 +11,20 @@ logger.setLevel(level=logging.DEBUG)
 def main():
     is_download_successful = find_latest_file()
 
-    if is_download_successful:
-        pass
+    if not is_download_successful:
+        return False
+
+    film_list = helpers.parse_spreadsheet()
+
+    helpers.generate_html_report(film_list=film_list)
+
+
 
 
 def find_latest_file() -> bool:
+    # skip download for testing only
+    # todo remove this
+    return True
     response = requests.get(url=constants.BFI_URL)
     soup = BeautifulSoup(response.text, "html.parser")
     latestFileLink = soup.find("a", {"class": "FileDownload__Link-sc-ix3u4x-1"})
@@ -23,7 +33,7 @@ def find_latest_file() -> bool:
 
 
 def download_latest_file(download_url: str) -> bool:
-    print(download_url)
+    logger.info("Downloading file from: " + download_url)
 
     try:
         response = requests.get(url=download_url)
@@ -31,6 +41,7 @@ def download_latest_file(download_url: str) -> bool:
         with open(file=constants.FILE_DOWNLOAD_LOCATION, mode="wb") as spreadsheet_file:
             spreadsheet_file.write(response.content)
 
+        logger.info("File downloaded successfully")
         return True
 
     except Exception as e:
