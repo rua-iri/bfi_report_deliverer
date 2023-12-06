@@ -17,7 +17,7 @@ from mapping import (
 )
 
 
-def parse_spreadsheet():
+def parse_spreadsheet() -> list:
     """
     Parse the spreadsheet and a return a list of the top 15 films
     """
@@ -48,7 +48,7 @@ def parse_spreadsheet():
     return film_list
 
 
-def get_template_strings():
+def get_template_strings() -> tuple:
     """
     Load the html templates as strings to be formatted later
     """
@@ -62,7 +62,7 @@ def get_template_strings():
     return (base_html, table_row_html)
 
 
-def generate_html_report(film_list):
+def generate_html_report(film_list) -> None:
     """
     Generate the new html report using the html templates
     """
@@ -74,22 +74,16 @@ def generate_html_report(film_list):
         table_row = table_row_html.format(film)
         complete_table_html += table_row
 
-    print(complete_table_html)
-
     # write content to html
     with open(constants.HTML_REPORT_LOCATION, "w") as file:
         file.write(base_html.format(top_15_contents=complete_table_html))
 
 
 
-def generate_pdf_report(film_list):
+def generate_pdf_report() -> None:
     """
-    Generate the new pdf report using the html templates
+    Generate the new pdf report using the html template
     """
-    # generate table rows and append them to complete table string
-    for film in film_list:
-        table_row = table_row_html.format(film)
-        complete_table_html += table_row
 
-    # write content to pdf
-    # pdfkit.from_string()
+    # pdfkit.from_file(input=constants.HTML_REPORT_LOCATION, output_path=constants.PDF_REPORT_LOCATION)
+    # pdfkit.from_string(input=film_page_html, output_path=constants.PDF_REPORT_LOCATION)
