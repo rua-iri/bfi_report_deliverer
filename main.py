@@ -10,6 +10,9 @@ logger.setLevel(level=logging.DEBUG)
 
 
 def find_latest_file() -> bool:
+    """
+    Scrape the BFI's website to find a link to the latest report
+    """
     # skip download for testing only
     # TODO: remove this
     return True
@@ -21,6 +24,9 @@ def find_latest_file() -> bool:
 
 
 def download_latest_file(download_url: str) -> bool:
+    """
+    Download the latest copy of the BFI's weekly report
+    """
     logger.info("Downloading file from: " + download_url)
 
     try:
@@ -45,6 +51,8 @@ def main():
 
     film_list = helpers.parse_spreadsheet()
     helpers.generate_html_report(film_list=film_list)
+
+    helpers.generate_pdf_report()
 
 
 if __name__ == "__main__":

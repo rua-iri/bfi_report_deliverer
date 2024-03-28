@@ -2,7 +2,6 @@ import openpyxl
 import constants
 import pdfkit
 from classes import Film
-from constants import FILE_DOWNLOAD_LOCATION
 from mapping import (
     RANK,
     TITLE,
@@ -17,6 +16,41 @@ from mapping import (
 )
 
 
+top_15_row: list = [3, 17]
+other_uk_row: list = [0, 0]
+other_new_row: list = [0, 0]
+
+
+def find_section(start_row, section_name):
+    """
+    Locate the sections in the spreadsheet for other uk films and new releases
+    """
+
+    sheet = openpyxl.load_workbook(
+        filename=constants.FILE_DOWNLOAD_LOCATION, read_only=True, data_only=True
+    ).active
+
+    for index, row in enumerate(
+        sheet.iter_rows(min_row=start_row, min_col=2, max_col=2, values_only=True)
+    ):
+
+        if section_name == "other uk films":
+            if str(row[0]).lower() == section_name:
+                other_uk_row[0] = index + 1 + start_row
+
+            elif other_uk_row[0] != 0 and not row[0]:
+                other_uk_row[1] = index - 1 + start_row
+                break
+
+        if section_name == "other new releases":
+            if str(row[0]).lower() == section_name:
+                other_new_row[0] = index + 1 + start_row
+
+            elif other_new_row[0] != 0 and not row[0]:
+                other_new_row[1] = index - 1 + start_row
+                break
+
+
 def parse_spreadsheet() -> list:
     """
     Parse the spreadsheet and a return a list of the top 15 films
@@ -24,7 +58,7 @@ def parse_spreadsheet() -> list:
     film_list = []
 
     sheet = openpyxl.load_workbook(
-        filename=FILE_DOWNLOAD_LOCATION, read_only=True, data_only=True
+        filename=constants.FILE_DOWNLOAD_LOCATION, read_only=True, data_only=True
     ).active
 
     # iterate through first 15 films
@@ -79,11 +113,9 @@ def generate_html_report(film_list) -> None:
         file.write(base_html.format(top_15_contents=complete_table_html))
 
 
-
 def generate_pdf_report() -> None:
     """
     Generate the new pdf report using the html template
     """
-
-    # pdfkit.from_file(input=constants.HTML_REPORT_LOCATION, output_path=constants.PDF_REPORT_LOCATION)
+    pdfkit.from_file(input=constants.HTML_REPORT_LOCATION, output_path=constants.PDF_REPORT_LOCATION)
     # pdfkit.from_string(input=film_page_html, output_path=constants.PDF_REPORT_LOCATION)
