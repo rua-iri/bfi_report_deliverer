@@ -1,9 +1,11 @@
 import logging
 import re
 import requests
+import resend
 from bs4 import BeautifulSoup
 import constants
 import helpers
+
 
 logger = logging.getLogger(__name__)
 logger.setLevel(level=logging.DEBUG)
@@ -43,7 +45,19 @@ def download_latest_file(download_url: str) -> bool:
         return False
 
 def send_report():
-    pass
+    resend.api_key = "apikey_goes_here"
+
+    parameters = {
+        "From": "fromemail",
+        "to": ["toemail"],
+        "subject": "email subject",
+        "html": "<html>email body here</html>",
+    }
+
+    email = resend.Emails.send(params=parameters)
+    logger.info(email)
+
+    
 
 def main():
     is_download_successful = find_latest_file()
@@ -55,6 +69,9 @@ def main():
     helpers.generate_html_report(film_list=film_list)
 
     helpers.generate_pdf_report()
+
+    user_list = helpers.get_subscribers()
+
 
 
 if __name__ == "__main__":
