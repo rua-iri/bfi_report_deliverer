@@ -1,6 +1,7 @@
 import openpyxl
 import constants
 import pdfkit
+import sqlite3
 from classes import Film
 from mapping import (
     RANK,
@@ -19,6 +20,9 @@ from mapping import (
 top_15_row: list = [3, 17]
 other_uk_row: list = [0, 0]
 other_new_row: list = [0, 0]
+
+con = sqlite3.connect("bfi_report.db")
+con.row_factory = sqlite3.Row
 
 
 def find_section(start_row, section_name):
@@ -117,5 +121,25 @@ def generate_pdf_report() -> None:
     """
     Generate the new pdf report using the html template
     """
-    pdfkit.from_file(input=constants.HTML_REPORT_LOCATION, output_path=constants.PDF_REPORT_LOCATION)
+    pdfkit.from_file(
+        input=constants.HTML_REPORT_LOCATION, output_path=constants.PDF_REPORT_LOCATION
+    )
     # pdfkit.from_string(input=film_page_html, output_path=constants.PDF_REPORT_LOCATION)
+
+
+def get_subscribers():
+    """
+    Query database for list of all currently active subscribers
+    """
+    cursor = con.cursor()
+    res = cursor.execute(
+        constants.SELECT_USERS_QUERY,
+    )
+    user_list = res.fetchall()
+
+    return user_list
+
+
+
+
+

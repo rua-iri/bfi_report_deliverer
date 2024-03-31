@@ -42,6 +42,8 @@ def download_latest_file(download_url: str) -> bool:
         logger.error("Error: ", exc_info=True)
         return False
 
+def send_report():
+    pass
 
 def main():
     is_download_successful = find_latest_file()
