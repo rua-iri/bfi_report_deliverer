@@ -6,5 +6,8 @@ BASE_HTML_TEMPLATE = "templates/_base.html"
 TABLE_ROW_TEMPLATE = "templates/table_row.html"
 HTML_REPORT_LOCATION = "reports/report.html"
 PDF_REPORT_LOCATION = "reports/report.pdf"
+HTML_EMAIL_LOCATION = "templates/email.html"
 
 SELECT_USERS_QUERY = "SELECT * FROM users WHERE isActive = TRUE;"
+
+FROM_EMAIL = "example@example.com"

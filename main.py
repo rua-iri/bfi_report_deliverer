@@ -15,7 +15,7 @@ def find_latest_file() -> bool:
     """
     Scrape the BFI's website to find a link to the latest report
     """
-    # skip download for testing only
+    # skip download for development only (we don't need to download the newest version every time)
     # TODO: remove this
     return True
     response = requests.get(url=constants.BFI_URL)
@@ -44,14 +44,19 @@ def download_latest_file(download_url: str) -> bool:
         logger.error("Error: ", exc_info=True)
         return False
 
-def send_report():
+def send_report(first_name, email_address):
     resend.api_key = "apikey_goes_here"
+
+    # TODO: format email content using the user's details
+
+    email_subject = ""
+    html_content = ""
 
     parameters = {
         "From": "fromemail",
-        "to": ["toemail"],
-        "subject": "email subject",
-        "html": "<html>email body here</html>",
+        "to": [email_address],
+        "subject": email_subject,
+        "html": html_content,
     }
 
     email = resend.Emails.send(params=parameters)
