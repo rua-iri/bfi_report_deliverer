@@ -10,6 +10,8 @@ import helpers
 logger = logging.getLogger(__name__)
 logger.setLevel(level=logging.DEBUG)
 
+WEEKEND_DATES = [0, 0]
+
 
 def find_latest_file() -> bool:
     """
@@ -21,6 +23,12 @@ def find_latest_file() -> bool:
     response = requests.get(url=constants.BFI_URL)
     soup = BeautifulSoup(response.text, "html.parser")
     latestFileLink = soup.find("a", {"class": re.compile("FileDownload__Link")})
+
+
+    # TODO: get the week's dates from the filename here
+    file_title = soup.find("span", {"class": re.compile("FileDownload__Title")})
+    WEEKEND_DATES = file_title.text.split('office report: ')[1].split(' ')[0].split('-')
+    
 
     return download_latest_file(download_url=latestFileLink.get("href"))
 
@@ -44,13 +52,16 @@ def download_latest_file(download_url: str) -> bool:
         logger.error("Error: ", exc_info=True)
         return False
 
-def send_report(first_name, email_address):
+def send_report(user_name, email_address):
     resend.api_key = "apikey_goes_here"
 
     # TODO: format email content using the user's details
 
     email_subject = ""
-    html_content = ""
+    
+    with open(constants.HTML_EMAIL_LOCATION, "r") as html_file:
+        html_content = html_file.read()
+        html_content.format(user_name=user_name, week_number=0)
 
     parameters = {
         "From": "fromemail",
