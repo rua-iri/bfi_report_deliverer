@@ -15,6 +15,16 @@ Create virtual environment and install requirements
 
 `pip3 install -r requirements.txt`
 
+Create .env file with the following variables
+
+`touch .env`
+
+```
+RESEND_API_KEY=<API_KEY>
+
+FROM_EMAIL=<EMAIL_ADDRESS>
+```
+
 
 Run program
 
