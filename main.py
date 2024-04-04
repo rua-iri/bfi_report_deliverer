@@ -63,12 +63,13 @@ def send_report(user_name: str, email_address: str):
 
         email_subject = f"BFI Report: {WEEKEND_DATE}"
 
-        with open(constants.HTML_EMAIL_LOCATION, "r") as html_file:
-            html_content = html_file.read()
-            html_content.format(user_name=user_name, week_number=WEEKEND_DATE)
+        # TODO: get content for each user's email
+        html_content = helpers.generate_email_body(
+            user_name=user_name, week_number=WEEKEND_DATE
+        )
 
         parameters = {
-            "From": "fromemail",
+            "From": os.getenv("FROM_EMAIL"),
             "to": [email_address],
             "subject": email_subject,
             "html": html_content,

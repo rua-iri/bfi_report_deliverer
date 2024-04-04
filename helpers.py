@@ -2,6 +2,7 @@ import openpyxl
 import constants
 import pdfkit
 import sqlite3
+import jinja2
 from classes import Film
 from mapping import (
     RANK,
@@ -23,6 +24,8 @@ other_new_row: list = [0, 0]
 
 con = sqlite3.connect("bfi_report.db")
 con.row_factory = sqlite3.Row
+
+jinja_environment = jinja2.Environment(loader=jinja2.FileSystemLoader("templates"))
 
 
 def find_section(start_row, section_name):
@@ -138,6 +141,18 @@ def get_subscribers():
     user_list = res.fetchall()
 
     return user_list
+
+
+
+def generate_email_body(user_name: str, week_number: str) -> str:
+    """
+    Generate the body of the email to be sent to subscribers
+    """
+
+    email_template = jinja_environment.get_template("email.html")
+    return email_template.render(user_name=user_name, week_number=week_number)
+    
+
 
 
 
