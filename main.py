@@ -5,12 +5,15 @@ import resend
 from bs4 import BeautifulSoup
 import constants
 import helpers
+import os
+from dotenv import load_dotenv
 
 
 logger = logging.getLogger(__name__)
-logger.setLevel(level=logging.DEBUG)
+logger.setLevel(level=logging.INFO)
 
 WEEKEND_DATE = ""
+load_dotenv()
 
 
 def find_latest_file() -> bool:
@@ -46,50 +49,62 @@ def download_latest_file(download_url: str) -> bool:
         return True
 
     except Exception as e:
+        logger.error("Error Downloading File")
         logger.error("Error: ", exc_info=True)
         return False
 
 
-def send_report(user_name:str, email_address:str):
+def send_report(user_name: str, email_address: str):
     """
     Send email to subscriber with report file attached
     """
-    resend.api_key = "apikey_goes_here"
+    try:
+        resend.api_key = os.getenv("RESEND_API_KEY")
 
-    # TODO: format email content using the user's details
+        email_subject = f"BFI Report: {WEEKEND_DATE}"
 
-    email_subject = f"BFI Report: {WEEKEND_DATE}"
+        with open(constants.HTML_EMAIL_LOCATION, "r") as html_file:
+            html_content = html_file.read()
+            html_content.format(user_name=user_name, week_number=WEEKEND_DATE)
 
-    with open(constants.HTML_EMAIL_LOCATION, "r") as html_file:
-        html_content = html_file.read()
-        html_content.format(user_name=user_name, week_number=WEEKEND_DATE)
+        parameters = {
+            "From": "fromemail",
+            "to": [email_address],
+            "subject": email_subject,
+            "html": html_content,
+        }
 
-    parameters = {
-        "From": "fromemail",
-        "to": [email_address],
-        "subject": email_subject,
-        "html": html_content,
-    }
+        email = resend.Emails.send(params=parameters)
+        logger.info(email)
 
-    email = resend.Emails.send(params=parameters)
-    logger.info(email)
+    except Exception as e:
+        logger.error("Error in sending report")
+        raise e
 
 
 def main():
-    is_download_successful = find_latest_file()
 
-    if not is_download_successful:
-        return False
+    try:
+        is_download_successful = find_latest_file()
 
-    film_list = helpers.parse_spreadsheet()
-    helpers.generate_html_report(film_list=film_list)
+        not is_download_successful and False
 
-    helpers.generate_pdf_report()
+        logger.info("Download Complete")
 
-    user_list = helpers.get_subscribers()
+        film_list = helpers.parse_spreadsheet()
+        helpers.generate_html_report(film_list=film_list)
+        helpers.generate_pdf_report()
+        logger.info("Report Generated")
 
-    for user in user_list:
-        send_report(user_name=user['first_name'], email_address=user['email'])
+        user_list = helpers.get_subscribers()
+
+        for user in user_list:
+            send_report(user_name=user["first_name"], email_address=user["email"])
+
+        logger.info("Reports Sent")
+
+    except Exception as e:
+        logger.error(e)
 
 
 if __name__ == "__main__":
