@@ -16,7 +16,7 @@ WEEKEND_DATE = ""
 load_dotenv()
 
 
-def find_latest_file() -> bool:
+def find_latest_file() -> None:
     """
     Scrape the BFI's website to find a link to the latest report
     """
@@ -30,10 +30,10 @@ def find_latest_file() -> bool:
     file_title = soup.find("span", {"class": re.compile("FileDownload__Title")})
     WEEKEND_DATE = file_title.text.split("office report: ")[1]
 
-    return download_latest_file(download_url=latestFileLink.get("href"))
+    download_latest_file(download_url=latestFileLink.get("href"))
 
 
-def download_latest_file(download_url: str) -> bool:
+def download_latest_file(download_url: str) -> None:
     """
     Download the latest copy of the BFI's weekly report
     """
@@ -46,12 +46,11 @@ def download_latest_file(download_url: str) -> bool:
             spreadsheet_file.write(response.content)
 
         logger.info("File downloaded successfully")
-        return True
 
     except Exception as e:
         logger.error("Error Downloading File")
         logger.error("Error: ", exc_info=True)
-        return False
+        raise e
 
 
 def send_report(user_name: str, email_address: str):
@@ -86,10 +85,7 @@ def send_report(user_name: str, email_address: str):
 def main():
 
     try:
-        is_download_successful = find_latest_file()
-
-        not is_download_successful and False
-
+        find_latest_file()
         logger.info("Download Complete")
 
         film_list = helpers.parse_spreadsheet()
@@ -98,9 +94,11 @@ def main():
         logger.info("Report Generated")
 
         user_list = helpers.get_subscribers()
+        logger.info("User List Generated")
 
         for user in user_list:
             send_report(user_name=user["first_name"], email_address=user["email"])
+            logger.info(f"Report Sent to {user['first_name']} {user['last_name']}")
 
         logger.info("Reports Sent")
 

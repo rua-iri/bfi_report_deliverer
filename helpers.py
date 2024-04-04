@@ -89,35 +89,24 @@ def parse_spreadsheet() -> list:
     return film_list
 
 
-def get_template_strings() -> tuple:
-    """
-    Load the html templates as strings to be formatted later
-    """
-
-    with open(constants.BASE_HTML_TEMPLATE) as file:
-        base_html = file.read()
-
-    with open(constants.TABLE_ROW_TEMPLATE) as file:
-        table_row_html = file.read()
-
-    return (base_html, table_row_html)
-
-
 def generate_html_report(film_list) -> None:
     """
     Generate the new html report using the html templates
     """
-    base_html, table_row_html = get_template_strings()
+    base_html = jinja_environment.get_template("_base.html")
+    table_row_html = jinja_environment.get_template("table_row.html")
+
     complete_table_html = ""
 
     # generate table rows and append them to complete table string
     for film in film_list:
-        table_row = table_row_html.format(film)
+        table_row = table_row_html.render(film.__dict__)
+        # table_row = table_row_html.format(film)
         complete_table_html += table_row
 
     # write content to html
     with open(constants.HTML_REPORT_LOCATION, "w") as file:
-        file.write(base_html.format(top_15_contents=complete_table_html))
+        file.write(base_html.render(top_15_contents=complete_table_html))
 
 
 def generate_pdf_report() -> None:
@@ -127,7 +116,6 @@ def generate_pdf_report() -> None:
     pdfkit.from_file(
         input=constants.HTML_REPORT_LOCATION, output_path=constants.PDF_REPORT_LOCATION
     )
-    # pdfkit.from_string(input=film_page_html, output_path=constants.PDF_REPORT_LOCATION)
 
 
 def get_subscribers():
@@ -143,7 +131,6 @@ def get_subscribers():
     return user_list
 
 
-
 def generate_email_body(user_name: str, week_number: str) -> str:
     """
     Generate the body of the email to be sent to subscribers
@@ -151,10 +138,3 @@ def generate_email_body(user_name: str, week_number: str) -> str:
 
     email_template = jinja_environment.get_template("email.html")
     return email_template.render(user_name=user_name, week_number=week_number)
-    
-
-
-
-
-
-
