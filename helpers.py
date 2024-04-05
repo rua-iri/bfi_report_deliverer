@@ -138,3 +138,14 @@ def generate_email_body(user_name: str, week_number: str) -> str:
 
     email_template = jinja_environment.get_template("email.html")
     return email_template.render(user_name=user_name, week_number=week_number)
+
+
+def create_db():
+    """
+    Create users table in database (should only run on initialising repository)
+    """
+    cursor = con.cursor()
+
+    res = cursor.execute(constants.CREATE_TABLE_QUERY)
+
+    res.fetchall()

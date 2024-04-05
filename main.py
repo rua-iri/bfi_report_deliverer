@@ -22,7 +22,7 @@ def find_latest_file() -> None:
     """
     # skip download for development only (we don't need to download the newest version every time)
     # TODO: remove this
-    return True
+    # return True
     response = requests.get(url=constants.BFI_URL)
     soup = BeautifulSoup(response.text, "html.parser")
     latestFileLink = soup.find("a", {"class": re.compile("FileDownload__Link")})
@@ -74,8 +74,12 @@ def send_report(user_name: str, email_address: str):
             "html": html_content,
         }
 
-        email = resend.Emails.send(params=parameters)
-        logger.info(email)
+        print(parameters)
+        print()
+        print()
+
+        # email = resend.Emails.send(params=parameters)
+        # logger.info(email)
 
     except Exception as e:
         logger.error("Error in sending report")
