@@ -93,8 +93,8 @@ def generate_html_report(film_list) -> None:
     """
     Generate the new html report using the html templates
     """
-    base_html = jinja_environment.get_template("_base.html")
-    table_row_html = jinja_environment.get_template("table_row.html")
+    base_html = jinja_environment.get_template(constants.BASE_HTML_TEMPLATE)
+    table_row_html = jinja_environment.get_template(constants.TABLE_ROW_TEMPLATE)
 
     complete_table_html = ""
 

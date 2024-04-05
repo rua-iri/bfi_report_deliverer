@@ -2,8 +2,8 @@ BFI_URL = "https://www.bfi.org.uk/industry-data-insights/weekend-box-office-figu
 
 FILE_DOWNLOAD_LOCATION = "downloads/latest_report.xlsx"
 
-BASE_HTML_TEMPLATE = "templates/_base.html"
-TABLE_ROW_TEMPLATE = "templates/table_row.html"
+BASE_HTML_TEMPLATE = "_base.html"
+TABLE_ROW_TEMPLATE = "table_row.html"
 HTML_REPORT_LOCATION = "reports/report.html"
 PDF_REPORT_LOCATION = "reports/report.pdf"
 HTML_EMAIL_LOCATION = "email.html"

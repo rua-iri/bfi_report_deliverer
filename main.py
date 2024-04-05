@@ -20,6 +20,7 @@ def find_latest_file() -> None:
     """
     Scrape the BFI's website to find a link to the latest report
     """
+    global WEEKEND_DATE
     # skip download for development only (we don't need to download the newest version every time)
     # TODO: remove this
     # return True
@@ -67,19 +68,28 @@ def send_report(user_name: str, email_address: str):
             user_name=user_name, week_number=WEEKEND_DATE
         )
 
+        with open(constants.PDF_REPORT_LOCATION, "rb") as report_file:
+            attachment = list(report_file.read())
+
+        report_filename = WEEKEND_DATE.replace(" ", "_")
+
         parameters = {
-            "From": os.getenv("FROM_EMAIL"),
+            "from": os.getenv("FROM_EMAIL"),
             "to": [email_address],
             "subject": email_subject,
             "html": html_content,
+            "attachments": [
+                {
+                    "filename": f"{report_filename}_report.pdf", 
+                    "content": attachment
+                }
+            ],
         }
 
         print(parameters)
-        print()
-        print()
 
-        # email = resend.Emails.send(params=parameters)
-        # logger.info(email)
+        email = resend.Emails.send(params=parameters)
+        logger.info(email)
 
     except Exception as e:
         logger.error("Error in sending report")
