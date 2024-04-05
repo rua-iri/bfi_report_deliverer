@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 
 
 logger = logging.getLogger(__name__)
-logger.setLevel(level=logging.INFO)
+logging.basicConfig(level=logging.INFO)
 
 WEEKEND_DATE = ""
 load_dotenv()
@@ -63,7 +63,6 @@ def send_report(user_name: str, email_address: str):
 
         email_subject = f"BFI Report: {WEEKEND_DATE}"
 
-        # TODO: get content for each user's email
         html_content = helpers.generate_email_body(
             user_name=user_name, week_number=WEEKEND_DATE
         )
@@ -86,7 +85,6 @@ def send_report(user_name: str, email_address: str):
             ],
         }
 
-        print(parameters)
 
         email = resend.Emails.send(params=parameters)
         logger.info(email)

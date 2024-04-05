@@ -145,7 +145,5 @@ def create_db():
     Create users table in database (should only run on initialising repository)
     """
     cursor = con.cursor()
-
     res = cursor.execute(constants.CREATE_TABLE_QUERY)
-
     res.fetchall()
