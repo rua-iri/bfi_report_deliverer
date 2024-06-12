@@ -78,13 +78,9 @@ def send_report(user_name: str, email_address: str):
             "subject": email_subject,
             "html": html_content,
             "attachments": [
-                {
-                    "filename": f"{report_filename}_report.pdf", 
-                    "content": attachment
-                }
+                {"filename": f"{report_filename}_report.pdf", "content": attachment}
             ],
         }
-
 
         email = resend.Emails.send(params=parameters)
         logger.info(email)
