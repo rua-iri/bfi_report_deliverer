@@ -263,17 +263,13 @@ def is_file_new(file_hash: str) -> bool:
     """
 
     cursor = con.cursor()
-    result = cursor.execute(
-        constants.SELECT_FILES_QUERY, (file_hash,)
-    ).fetchall()
+    result = cursor.execute(constants.SELECT_FILES_QUERY, (file_hash,)).fetchall()
     print(result)
     print(not result)
 
-    timestamp = unix_timestamp()
+    timestamp = int(unix_timestamp())
 
-    cursor.execute(
-        constants.INSERT_FILE_QUERY, (file_hash, timestamp)
-    )
+    cursor.execute(constants.INSERT_FILE_QUERY, (file_hash, timestamp))
     con.commit()
 
     if len(result) == 0:
