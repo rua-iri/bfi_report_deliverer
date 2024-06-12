@@ -1,4 +1,7 @@
 import openpyxl
+import openpyxl.workbook
+import openpyxl.worksheet
+import openpyxl.worksheet.worksheet
 import constants
 import pdfkit
 import sqlite3
@@ -19,7 +22,9 @@ from mapping import (
 
 
 top_15_row: list = [3, 17]
-other_uk_row: list = [0, 0]
+other_uk_row: list = [
+    0,
+]
 other_new_row: list = [0, 0]
 
 con = sqlite3.connect("bfi_report.db")
@@ -70,7 +75,11 @@ def parse_spreadsheet() -> list:
 
     # iterate through first 15 films
     for row in sheet.iter_rows(
-        min_row=3, max_row=17, min_col=1, max_col=10, values_only=True
+        min_row=3,
+        max_row=17,
+        min_col=constants.MIN_COL,
+        max_col=constants.MAX_COL,
+        values_only=True,
     ):
         film = Film(
             rank=row[RANK],
@@ -87,6 +96,79 @@ def parse_spreadsheet() -> list:
         film_list.append(film)
 
     return film_list
+
+
+def parse_other_uk_films():
+    film_list = []
+    sheet = openpyxl.load_workbook(filename=constants.FILE_DOWNLOAD_LOCATION).active
+
+    for index, row in enumerate(
+        sheet.iter_rows(
+            min_row=22,
+            min_col=constants.MIN_COL,
+            max_col=constants.MAX_COL,
+            values_only=True,
+        )
+    ):
+
+        print(f"{index}: {row[RANK]}")
+
+        if row[0] == None:
+            other_uk_row.append(index + other_uk_row[0])
+            break
+
+        film = Film(
+            rank=row[RANK],
+            title=row[TITLE],
+            origin_country=row[ORIGIN_COUNTRY],
+            weekend_gross=row[WEEKEND_GROSS],
+            distributor=row[DISTRIBUTOR],
+            weekly_change=row[WEEKLY_CHANGE],
+            weeks_on_release=row[WEEKS_ON_RELEASE],
+            cinema_number=row[CINEMA_NUMBER],
+            site_average=row[SITE_AVERAGE],
+            total_gross=row[TOTAL_GROSS],
+        )
+
+        film_list.append(film)
+
+    print(film_list)
+
+    print(other_uk_row)
+
+
+def parse_other_new_releases():
+    film_list = []
+    sheet = openpyxl.load_workbook(filename=constants.FILE_DOWNLOAD_LOCATION).active
+
+    for row in sheet.iter_rows(
+        min_row=other_uk_row[1],
+        min_col=constants.MIN_COL,
+        max_col=constants.MAX_COL,
+        values_only=True,
+    ):
+
+        # print(row)
+
+        if row[0] == None:
+            break
+
+        film = Film(
+            rank=row[RANK],
+            title=row[TITLE],
+            origin_country=row[ORIGIN_COUNTRY],
+            weekend_gross=row[WEEKEND_GROSS],
+            distributor=row[DISTRIBUTOR],
+            weekly_change=row[WEEKLY_CHANGE],
+            weeks_on_release=row[WEEKS_ON_RELEASE],
+            cinema_number=row[CINEMA_NUMBER],
+            site_average=row[SITE_AVERAGE],
+            total_gross=row[TOTAL_GROSS],
+        )
+
+        film_list.append(film)
+
+    print(film_list)
 
 
 def generate_html_report(film_list) -> None:

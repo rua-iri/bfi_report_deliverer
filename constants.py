@@ -2,6 +2,11 @@ BFI_URL = "https://www.bfi.org.uk/industry-data-insights/weekend-box-office-figu
 
 FILE_DOWNLOAD_LOCATION = "downloads/latest_report.xlsx"
 
+
+MIN_COL=1
+MAX_COL=10
+
+
 BASE_HTML_TEMPLATE = "_base.html"
 TABLE_ROW_TEMPLATE = "table_row.html"
 HTML_REPORT_LOCATION = "reports/report.html"
