@@ -1,3 +1,4 @@
+import hashlib
 import openpyxl
 import openpyxl.workbook
 import openpyxl.worksheet
@@ -229,3 +230,26 @@ def create_db():
     cursor = con.cursor()
     res = cursor.execute(constants.CREATE_TABLE_QUERY)
     res.fetchall()
+
+
+
+def gen_file_hash() -> str:
+    """Generate a hash of the excel report file downloaded
+
+    Returns:
+        str: An md5 hash of the file
+    """
+    
+    h_lib = hashlib.md5()
+    
+    with open(constants.FILE_DOWNLOAD_LOCATION, "rb") as file:
+        chunk = 0
+        while chunk != b'':
+            chunk = file.read(1024)
+            h_lib.update(chunk)
+    
+    return h_lib.hexdigest()
+
+
+
+
