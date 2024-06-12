@@ -1,4 +1,5 @@
-import hashlib
+from hashlib import md5 as md5_hash
+from time import time as unix_timestamp
 import openpyxl
 import openpyxl.workbook
 import openpyxl.worksheet
@@ -232,24 +233,54 @@ def create_db():
     res.fetchall()
 
 
-
 def gen_file_hash() -> str:
     """Generate a hash of the excel report file downloaded
 
     Returns:
         str: An md5 hash of the file
     """
-    
-    h_lib = hashlib.md5()
-    
+
+    h_lib = md5_hash()
+
     with open(constants.FILE_DOWNLOAD_LOCATION, "rb") as file:
         chunk = 0
-        while chunk != b'':
+        while chunk != b"":
             chunk = file.read(1024)
             h_lib.update(chunk)
-    
+
     return h_lib.hexdigest()
 
 
+def is_file_new(file_hash: str) -> bool:
+    """Check whether the file downloaded has been processed before and insert
+    the new file's hash into the database
+
+    Args:
+        file_hash (str): An md5 hash of the file from gen_file_hash()
+
+    Returns:
+        bool: Whether the file is new or not
+    """
+
+    cursor = con.cursor()
+    result = cursor.execute(
+        constants.SELECT_FILES_QUERY, (file_hash,)
+    ).fetchall()
+    print(result)
+    print(not result)
+
+    timestamp = unix_timestamp()
+
+    cursor.execute(
+        constants.INSERT_FILE_QUERY, (file_hash, timestamp)
+    )
+    con.commit()
+
+    if len(result) == 0:
+        return True
+    else:
+        return False
 
 
+if __name__ == "__main__":
+    is_file_new("67089608790baa07d928c8d5f51b5c28")
