@@ -29,3 +29,8 @@ FROM_EMAIL = "example@example.com"
 
 SELECT_FILES_QUERY = "SELECT * FROM files WHERE hash = ?"
 INSERT_FILE_QUERY = "INSERT INTO files (hash, timestamp) VALUES (?, ?)"
+
+
+TMDB_API_URL = "https://api.themoviedb.org/3/search/movie?query={query}"
+
+

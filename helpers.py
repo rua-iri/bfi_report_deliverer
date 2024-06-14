@@ -1,4 +1,5 @@
 from hashlib import md5 as md5_hash
+import os
 from time import time as unix_timestamp
 import openpyxl
 import openpyxl.workbook
@@ -8,6 +9,8 @@ import constants
 import pdfkit
 import sqlite3
 import jinja2
+import requests
+import dotenv
 from classes import Film
 from mapping import (
     RANK,
@@ -26,11 +29,28 @@ from mapping import (
 top_15_row: list = [3, 17]
 other_uk_row: list = [22]
 
+dotenv.load_dotenv()
+
 
 con = sqlite3.connect("bfi_report.db")
 con.row_factory = sqlite3.Row
 
 jinja_environment = jinja2.Environment(loader=jinja2.FileSystemLoader("templates"))
+
+
+def get_film_data(film: Film):
+    response = requests.get(
+        constants.TMDB_API_URL.format(query=film.title),
+        headers={
+            "accept": "application/json",
+            "Authorization": os.environ.get("TMBD_API_KEY"),
+        },
+    )
+
+    # TODO: implement handling the response from the api
+
+    # TODO: consider whether or not this is feature creep
+
 
 
 
@@ -82,9 +102,7 @@ def parse_films(film_group: str) -> list:
         )
         film_list.append(film)
 
-
     return film_list
-
 
 
 def generate_html_report(film_list) -> None:
