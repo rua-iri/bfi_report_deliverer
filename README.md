@@ -1,5 +1,17 @@
 # bfi_report_deliverer
 
+<div align="center">
+  <div>
+    A Python program to generate and deliver weekly reports about UK cinema
+    </div>
+  <br/>
+  <div>
+<img src="https://github.com/rua-iri/bfi_report_deliverer/assets/117874491/27e832fb-1c99-45eb-a190-04f88758c4cf" alt=bfi_report_deliverer logo" width="45%" />
+    </div>
+</div>
+
+
+
 ## Installation
 
 ### Clone the repository
