@@ -24,10 +24,8 @@ from mapping import (
 
 
 top_15_row: list = [3, 17]
-other_uk_row: list = [
-    0,
-]
-other_new_row: list = [0, 0]
+other_uk_row: list = [22]
+
 
 con = sqlite3.connect("bfi_report.db")
 con.row_factory = sqlite3.Row
@@ -35,88 +33,39 @@ con.row_factory = sqlite3.Row
 jinja_environment = jinja2.Environment(loader=jinja2.FileSystemLoader("templates"))
 
 
-def find_section(start_row, section_name):
-    """
-    Locate the sections in the spreadsheet for other uk films and new releases
-    """
 
-    sheet = openpyxl.load_workbook(
-        filename=constants.FILE_DOWNLOAD_LOCATION, read_only=True, data_only=True
-    ).active
-
-    for index, row in enumerate(
-        sheet.iter_rows(min_row=start_row, min_col=2, max_col=2, values_only=True)
-    ):
-
-        if section_name == "other uk films":
-            if str(row[0]).lower() == section_name:
-                other_uk_row[0] = index + 1 + start_row
-
-            elif other_uk_row[0] != 0 and not row[0]:
-                other_uk_row[1] = index - 1 + start_row
-                break
-
-        if section_name == "other new releases":
-            if str(row[0]).lower() == section_name:
-                other_new_row[0] = index + 1 + start_row
-
-            elif other_new_row[0] != 0 and not row[0]:
-                other_new_row[1] = index - 1 + start_row
-                break
-
-
-def parse_spreadsheet() -> list:
-    """
-    Parse the spreadsheet and a return a list of the top 15 films
-    """
+def parse_films(film_group: str) -> list:
     film_list = []
 
     sheet = openpyxl.load_workbook(
         filename=constants.FILE_DOWNLOAD_LOCATION, read_only=True, data_only=True
     ).active
 
-    # iterate through first 15 films
-    for row in sheet.iter_rows(
-        min_row=3,
-        max_row=17,
-        min_col=constants.MIN_COL,
-        max_col=constants.MAX_COL,
-        values_only=True,
-    ):
-        film = Film(
-            rank=row[RANK],
-            title=row[TITLE],
-            origin_country=row[ORIGIN_COUNTRY],
-            weekend_gross=row[WEEKEND_GROSS],
-            distributor=row[DISTRIBUTOR],
-            weekly_change=row[WEEKLY_CHANGE],
-            weeks_on_release=row[WEEKS_ON_RELEASE],
-            cinema_number=row[CINEMA_NUMBER],
-            site_average=row[SITE_AVERAGE],
-            total_gross=row[TOTAL_GROSS],
-        )
-        film_list.append(film)
-
-    return film_list
-
-
-def parse_other_uk_films():
-    film_list = []
-    sheet = openpyxl.load_workbook(filename=constants.FILE_DOWNLOAD_LOCATION).active
+    if film_group == "top_15":
+        MIN_ROW = top_15_row[0]
+        MAX_ROW = top_15_row[1]
+    elif film_group == "other_uk":
+        MIN_ROW = other_uk_row[0]
+        MAX_ROW = sheet.max_row
+    elif film_group == "other_new":
+        MIN_ROW = other_uk_row[1] + 3
+        MAX_ROW = sheet.max_row
+    else:
+        raise Exception("Invalid Film Group")
 
     for index, row in enumerate(
         sheet.iter_rows(
-            min_row=22,
+            min_row=MIN_ROW,
+            max_row=MAX_ROW,
             min_col=constants.MIN_COL,
             max_col=constants.MAX_COL,
             values_only=True,
         )
     ):
 
-        print(f"{index}: {row[RANK]}")
-
-        if row[0] == None:
-            other_uk_row.append(index + other_uk_row[0])
+        if row[RANK] == None:
+            if film_group == "other_uk":
+                other_uk_row.append(index + other_uk_row[0])
             break
 
         film = Film(
@@ -131,46 +80,11 @@ def parse_other_uk_films():
             site_average=row[SITE_AVERAGE],
             total_gross=row[TOTAL_GROSS],
         )
-
         film_list.append(film)
 
-    print(film_list)
 
-    print(other_uk_row)
+    return film_list
 
-
-def parse_other_new_releases():
-    film_list = []
-    sheet = openpyxl.load_workbook(filename=constants.FILE_DOWNLOAD_LOCATION).active
-
-    for row in sheet.iter_rows(
-        min_row=other_uk_row[1],
-        min_col=constants.MIN_COL,
-        max_col=constants.MAX_COL,
-        values_only=True,
-    ):
-
-        # print(row)
-
-        if row[0] == None:
-            break
-
-        film = Film(
-            rank=row[RANK],
-            title=row[TITLE],
-            origin_country=row[ORIGIN_COUNTRY],
-            weekend_gross=row[WEEKEND_GROSS],
-            distributor=row[DISTRIBUTOR],
-            weekly_change=row[WEEKLY_CHANGE],
-            weeks_on_release=row[WEEKS_ON_RELEASE],
-            cinema_number=row[CINEMA_NUMBER],
-            site_average=row[SITE_AVERAGE],
-            total_gross=row[TOTAL_GROSS],
-        )
-
-        film_list.append(film)
-
-    print(film_list)
 
 
 def generate_html_report(film_list) -> None:

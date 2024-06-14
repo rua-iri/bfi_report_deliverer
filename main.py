@@ -103,7 +103,7 @@ def main():
 
             pass
 
-        film_list = helpers.parse_spreadsheet()
+        film_list = helpers.parse_films("top_15")
         helpers.generate_html_report(film_list=film_list)
         helpers.generate_pdf_report()
         logger.info("Report Generated")
