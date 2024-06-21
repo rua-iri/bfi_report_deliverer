@@ -1,4 +1,5 @@
-from constants import TMDB_IMG_URL
+from constants import TMDB_IMG_URL, IMDB_URL
+
 
 class Film:
     def __init__(
@@ -31,11 +32,13 @@ class Film:
         else:
             self.weekly_change = weekly_change
 
-    def set_poster(self, poster):
-        if poster:
-            self.poster = TMDB_IMG_URL.format(filename=poster)
+    def set_film_data(self, film_data):
+        if film_data:
+            self.poster = TMDB_IMG_URL.format(filename=film_data["poster"])
+            self.imdb = IMDB_URL.format(id=film_data["imdb_id"])
         else:
             self.poster = "https://www.bfi.org.uk/dist/server/0207614d447715c2d2b9257bdd5e68b4.svg"
+            self.imdb = "https://www.imdb.com/"
 
     def __repr__(self):
         return (

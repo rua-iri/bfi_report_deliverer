@@ -41,7 +41,7 @@ jinja_environment = jinja2.Environment(loader=jinja2.FileSystemLoader("templates
 
 def get_film_data(film: Film) -> dict:
     response = requests.get(
-        constants.TMDB_API_URL.format(query=film.title.split("(")[0]),
+        constants.TMDB_SEARCH_API_URL.format(query=film.title.split("(")[0]),
         headers={
             "accept": "application/json",
             "Authorization": os.environ.get("TMBD_API_KEY"),
@@ -54,13 +54,21 @@ def get_film_data(film: Film) -> dict:
         return {}
 
     first_result = film_data["results"][0]
-    return_data = {
-        "poster": first_result["poster_path"],
-    }
+    film_id = film_data["results"][0]["id"]
 
     print(first_result)
 
-    return return_data
+    response = requests.get(
+        constants.TMDB_DETAILS_API_URL.format(id=film_id),
+        headers={
+            "accept": "application/json",
+            "Authorization": os.environ.get("TMBD_API_KEY"),
+        },
+    )
+
+    film_data = json.loads(response.text)
+
+    return {"poster": film_data["poster_path"], "imdb_id": film_data["imdb_id"]}
 
 
 def parse_films(film_group: str) -> list:
@@ -110,13 +118,13 @@ def parse_films(film_group: str) -> list:
             total_gross=row[TOTAL_GROSS],
         )
         film_data = get_film_data(film)
-        film.set_poster(film_data.get("poster"))
+        film.set_film_data(film_data)
         film_list.append(film)
 
     return film_list
 
 
-def generate_html_report(film_list) -> None:
+def generate_html_report(film_list: list, weekend_date: str) -> None:
     """
     Generate the new html report using the html templates
     """
@@ -132,7 +140,11 @@ def generate_html_report(film_list) -> None:
 
     # write content to html
     with open(constants.HTML_REPORT_LOCATION, "w") as file:
-        file.write(base_html.render(top_15_contents=complete_card_html))
+        file.write(
+            base_html.render(
+                top_15_contents=complete_card_html, weekend_date=weekend_date
+            )
+        )
 
 
 def generate_pdf_report() -> None:

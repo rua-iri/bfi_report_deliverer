@@ -102,13 +102,12 @@ def main():
             pass
 
         film_list = helpers.parse_films("top_15")
-        helpers.generate_html_report(film_list=film_list)
+        helpers.generate_html_report(film_list=film_list, weekend_date=WEEKEND_DATE)
         # helpers.generate_pdf_report()
         # logger.info("Report Generated")
 
         # user_list = helpers.get_subscribers()
         # logger.info("User List Generated")
-
 
         # TODO: uncomment this later
         # for user in user_list:
