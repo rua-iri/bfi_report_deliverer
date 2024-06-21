@@ -95,16 +95,23 @@ def main():
     try:
         find_latest_file()
         logger.info("Download Complete")
-        file_hash = helpers.gen_file_hash()
+        file_hash: str = helpers.gen_file_hash()
 
         if helpers.is_file_new(file_hash):
             # TODO: implement some way to handle this error and delay the program's execution for another day
             pass
 
-        film_list = helpers.parse_films("top_15")
-        helpers.generate_html_report(film_list=film_list, weekend_date=WEEKEND_DATE)
-        # helpers.generate_pdf_report()
-        # logger.info("Report Generated")
+        top_15_film_list = helpers.parse_films("top_15")
+        other_uk_film_list = helpers.parse_films("other_uk")
+        other_new_film_list = helpers.parse_films("other_new")
+        helpers.generate_html_report(
+            top_15_film_list=top_15_film_list,
+            other_uk_film_list=other_uk_film_list,
+            other_new_film_list=other_new_film_list,
+            weekend_date=WEEKEND_DATE,
+        )
+        helpers.generate_pdf_report()
+        logger.info("Report Generated")
 
         # user_list = helpers.get_subscribers()
         # logger.info("User List Generated")

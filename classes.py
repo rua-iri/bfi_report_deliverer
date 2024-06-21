@@ -32,12 +32,15 @@ class Film:
         else:
             self.weekly_change = weekly_change
 
-    def set_film_data(self, film_data):
-        if film_data:
+    def set_film_data(self, film_data: dict):
+        if film_data.get("poster"):
             self.poster = TMDB_IMG_URL.format(filename=film_data["poster"])
-            self.imdb = IMDB_URL.format(id=film_data["imdb_id"])
         else:
             self.poster = "https://www.bfi.org.uk/dist/server/0207614d447715c2d2b9257bdd5e68b4.svg"
+
+        if film_data.get("imdb_id"):
+            self.imdb = IMDB_URL.format(id=film_data["imdb_id"])
+        else:
             self.imdb = "https://www.imdb.com/"
 
     def __repr__(self):

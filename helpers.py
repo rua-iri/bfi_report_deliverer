@@ -40,6 +40,14 @@ jinja_environment = jinja2.Environment(loader=jinja2.FileSystemLoader("templates
 
 
 def get_film_data(film: Film) -> dict:
+    """Fetch film data from TMDB api
+
+    Args:
+        film (Film): an instance of the Film class
+
+    Returns:
+        dict: a dictionary containing detailed information about the film
+    """
     response = requests.get(
         constants.TMDB_SEARCH_API_URL.format(query=film.title.split("(")[0]),
         headers={
@@ -53,10 +61,7 @@ def get_film_data(film: Film) -> dict:
     if film_data["total_results"] == 0:
         return {}
 
-    first_result = film_data["results"][0]
     film_id = film_data["results"][0]["id"]
-
-    print(first_result)
 
     response = requests.get(
         constants.TMDB_DETAILS_API_URL.format(id=film_id),
@@ -124,25 +129,43 @@ def parse_films(film_group: str) -> list:
     return film_list
 
 
-def generate_html_report(film_list: list, weekend_date: str) -> None:
+def generate_html_report(
+    top_15_film_list: list,
+    other_uk_film_list: list,
+    other_new_film_list: list,
+    weekend_date: str,
+) -> None:
     """
     Generate the new html report using the html templates
     """
     base_html = jinja_environment.get_template(constants.BASE_HTML_TEMPLATE)
     card_html = jinja_environment.get_template(constants.CARD_TEMPLATE)
 
-    complete_card_html = ""
+    top_15_contents = ""
+    other_uk_contents = ""
+    other_new_contents = ""
 
     # generate table rows and append them to complete table string
-    for film in film_list:
+    for film in top_15_film_list:
         card = card_html.render(film.__dict__)
-        complete_card_html += card
+        top_15_contents += card
+
+    for film in other_uk_film_list:
+        card = card_html.render(film.__dict__)
+        other_uk_contents += card
+    
+    for film in other_new_film_list:
+        card = card_html.render(film.__dict__)
+        other_new_contents += card
 
     # write content to html
     with open(constants.HTML_REPORT_LOCATION, "w") as file:
         file.write(
             base_html.render(
-                top_15_contents=complete_card_html, weekend_date=weekend_date
+                top_15_contents=top_15_contents,
+                other_uk_contents=other_uk_contents,
+                other_new_contents=other_new_contents,
+                weekend_date=weekend_date,
             )
         )
 
