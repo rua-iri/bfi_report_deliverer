@@ -1,4 +1,5 @@
 from hashlib import md5 as md5_hash
+import json
 import os
 from time import time as unix_timestamp
 import openpyxl
@@ -38,20 +39,28 @@ con.row_factory = sqlite3.Row
 jinja_environment = jinja2.Environment(loader=jinja2.FileSystemLoader("templates"))
 
 
-def get_film_data(film: Film):
+def get_film_data(film: Film) -> dict:
     response = requests.get(
-        constants.TMDB_API_URL.format(query=film.title),
+        constants.TMDB_API_URL.format(query=film.title.split("(")[0]),
         headers={
             "accept": "application/json",
             "Authorization": os.environ.get("TMBD_API_KEY"),
         },
     )
 
-    # TODO: implement handling the response from the api
+    film_data = json.loads(response.text)
 
-    # TODO: consider whether or not this is feature creep
+    if film_data["total_results"] == 0:
+        return {}
 
+    first_result = film_data["results"][0]
+    return_data = {
+        "poster": first_result["poster_path"],
+    }
 
+    print(first_result)
+
+    return return_data
 
 
 def parse_films(film_group: str) -> list:
@@ -100,6 +109,8 @@ def parse_films(film_group: str) -> list:
             site_average=row[SITE_AVERAGE],
             total_gross=row[TOTAL_GROSS],
         )
+        film_data = get_film_data(film)
+        film.set_poster(film_data.get("poster"))
         film_list.append(film)
 
     return film_list
@@ -110,19 +121,18 @@ def generate_html_report(film_list) -> None:
     Generate the new html report using the html templates
     """
     base_html = jinja_environment.get_template(constants.BASE_HTML_TEMPLATE)
-    table_row_html = jinja_environment.get_template(constants.TABLE_ROW_TEMPLATE)
+    card_html = jinja_environment.get_template(constants.CARD_TEMPLATE)
 
-    complete_table_html = ""
+    complete_card_html = ""
 
     # generate table rows and append them to complete table string
     for film in film_list:
-        table_row = table_row_html.render(film.__dict__)
-        # table_row = table_row_html.format(film)
-        complete_table_html += table_row
+        card = card_html.render(film.__dict__)
+        complete_card_html += card
 
     # write content to html
     with open(constants.HTML_REPORT_LOCATION, "w") as file:
-        file.write(base_html.render(top_15_contents=complete_table_html))
+        file.write(base_html.render(top_15_contents=complete_card_html))
 
 
 def generate_pdf_report() -> None:
@@ -211,4 +221,5 @@ def is_file_new(file_hash: str) -> bool:
 
 
 if __name__ == "__main__":
-    is_file_new("67089608790baa07d928c8d5f51b5c28")
+    # is_file_new("67089608790baa07d928c8d5f51b5c28")
+    get_film_data("The Fall Guy")

@@ -98,22 +98,22 @@ def main():
         file_hash = helpers.gen_file_hash()
 
         if helpers.is_file_new(file_hash):
-
             # TODO: implement some way to handle this error and delay the program's execution for another day
-
             pass
 
         film_list = helpers.parse_films("top_15")
         helpers.generate_html_report(film_list=film_list)
-        helpers.generate_pdf_report()
-        logger.info("Report Generated")
+        # helpers.generate_pdf_report()
+        # logger.info("Report Generated")
 
-        user_list = helpers.get_subscribers()
-        logger.info("User List Generated")
+        # user_list = helpers.get_subscribers()
+        # logger.info("User List Generated")
 
-        for user in user_list:
-            send_report(user_name=user["first_name"], email_address=user["email"])
-            logger.info(f"Report Sent to {user['first_name']} {user['last_name']}")
+
+        # TODO: uncomment this later
+        # for user in user_list:
+        #     send_report(user_name=user["first_name"], email_address=user["email"])
+        #     logger.info(f"Report Sent to {user['first_name']} {user['last_name']}")
 
         logger.info("Reports Sent")
 

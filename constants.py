@@ -8,7 +8,7 @@ MAX_COL=10
 
 
 BASE_HTML_TEMPLATE = "_base.html"
-TABLE_ROW_TEMPLATE = "table_row.html"
+CARD_TEMPLATE = "card.html"
 HTML_REPORT_LOCATION = "reports/report.html"
 PDF_REPORT_LOCATION = "reports/report.pdf"
 HTML_EMAIL_LOCATION = "email.html"
@@ -32,5 +32,6 @@ INSERT_FILE_QUERY = "INSERT INTO files (hash, timestamp) VALUES (?, ?)"
 
 
 TMDB_API_URL = "https://api.themoviedb.org/3/search/movie?query={query}"
+TMDB_IMG_URL = "https://image.tmdb.org/t/p/w300{filename}"
 
 
