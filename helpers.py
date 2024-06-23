@@ -129,6 +129,32 @@ def parse_films(film_group: str) -> list:
     return film_list
 
 
+def render_html(film_list: list) -> str:
+    card_html = jinja_environment.get_template(constants.CARD_TEMPLATE)
+    film_list_contents: str = ""
+    page_count: int = 0
+    film_on_page_count: int = 0
+
+    # cards and append them to complete table string
+    for film in film_list:
+        card = card_html.render(film.__dict__)
+        film_list_contents += card
+
+        film_on_page_count += 1
+        if page_count > 0 and film_on_page_count == 4:
+            film_list_contents += "<div style='page-break-after: always;'></div>"
+            film_on_page_count = 0
+            page_count += 1
+        elif page_count == 0 and film_on_page_count == 3:
+            film_list_contents += "<div style='page-break-after: always;'></div>"
+            film_on_page_count = 0
+            page_count += 1
+
+    film_list_contents += "<div style='page-break-after: always;'></div>"
+
+    return film_list_contents
+
+
 def generate_html_report(
     top_15_film_list: list,
     other_uk_film_list: list,
@@ -139,24 +165,10 @@ def generate_html_report(
     Generate the new html report using the html templates
     """
     base_html = jinja_environment.get_template(constants.BASE_HTML_TEMPLATE)
-    card_html = jinja_environment.get_template(constants.CARD_TEMPLATE)
 
-    top_15_contents = ""
-    other_uk_contents = ""
-    other_new_contents = ""
-
-    # generate table rows and append them to complete table string
-    for film in top_15_film_list:
-        card = card_html.render(film.__dict__)
-        top_15_contents += card
-
-    for film in other_uk_film_list:
-        card = card_html.render(film.__dict__)
-        other_uk_contents += card
-    
-    for film in other_new_film_list:
-        card = card_html.render(film.__dict__)
-        other_new_contents += card
+    top_15_contents = render_html(top_15_film_list)
+    other_uk_contents = render_html(other_uk_film_list)
+    other_new_contents = render_html(other_new_film_list)
 
     # write content to html
     with open(constants.HTML_REPORT_LOCATION, "w") as file:

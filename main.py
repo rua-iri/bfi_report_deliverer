@@ -93,13 +93,13 @@ def send_report(user_name: str, email_address: str):
 def main():
 
     try:
-        find_latest_file()
-        logger.info("Download Complete")
-        file_hash: str = helpers.gen_file_hash()
+        # find_latest_file()
+        # logger.info("Download Complete")
+        # file_hash: str = helpers.gen_file_hash()
 
-        if helpers.is_file_new(file_hash):
-            # TODO: implement some way to handle this error and delay the program's execution for another day
-            pass
+        # if helpers.is_file_new(file_hash):
+        #     # TODO: implement some way to handle this error and delay the program's execution for another day
+        #     pass
 
         top_15_film_list = helpers.parse_films("top_15")
         other_uk_film_list = helpers.parse_films("other_uk")

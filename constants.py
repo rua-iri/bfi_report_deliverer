@@ -34,6 +34,6 @@ INSERT_FILE_QUERY = "INSERT INTO files (hash, timestamp) VALUES (?, ?)"
 TMDB_SEARCH_API_URL = "https://api.themoviedb.org/3/search/movie?query={query}"
 TMDB_DETAILS_API_URL = "https://api.themoviedb.org/3/movie/{id}"
 
-TMDB_IMG_URL = "https://image.tmdb.org/t/p/w300{filename}"
+TMDB_IMG_URL = "https://image.tmdb.org/t/p/w200{filename}"
 IMDB_URL = "https://www.imdb.com/title/{id}"
 
