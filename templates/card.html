@@ -1,8 +1,7 @@
 <div class="card my-3">
     <div class="row g-0">
-        <div class="col-4">
-            <img class="img-fluid rounded-start bg-dark h-100" alt="film poster"
-                src="{{ poster }}">
+        <div class="col-4 d-flex">
+            <img class="img-fluid rounded-start bg-dark" alt="film poster" src="{{ poster }}">
         </div>
         <div class="col-8">
             <div class="card-body">
@@ -10,58 +9,62 @@
                     <div>
                         {{ title }}
                     </div>
-                    <div>
+                    <div class="fw-bold">
                         #{{ rank }}
                     </div>
                 </h4>
-                <p class="card-text my-0">
-                    <span class="fw-bold">
-                        Country of Origin:
-                    </span>
-                    {{ origin_country }}
-                </p>
-                <p class="card-text my-0">
-                    <span class="fw-bold">
-                        Weekend Gross:
-                    </span>
-                    £{{ weekend_gross }}
-                </p>
-                <p class="card-text my-0">
-                    <span class="fw-bold">
-                        Distributor:
-                    </span>
-                    {{ distributor }}
-                </p>
-                <p class="card-text my-0">
-                    <span class="fw-bold">
-                        Change on Last Week:
-                    </span>
-                    {{ weekly_change }}%
-                </p>
-                <p class="card-text my-0">
-                    <span class="fw-bold">
-                        Weeks on Release:
-                    </span>
-                    {{ weeks_on_release }}
-                </p>
-                <p class="card-text my-0">
-                    <span class="fw-bold">
-                        Number of Cinemas:
-                    </span>
-                    {{ cinema_number }}
-                </p>
-                <p class="card-text my-0">
-                    <span class="fw-bold">
-                        Site Average:
-                    </span>
-                    £{{ site_average }}
-                </p>
-                <p class="card-text my-0">
-                    <span class="fw-bold">
-                        Total Gross to Date:
-                    </span>
-                    £{{ total_gross }}
-                </p>
+
+
+                <div class="my-2">
+                    <p class="card-text my-0">
+                        <span class="fw-bold">
+                            Country of Origin:
+                        </span>
+                        {{ origin_country }}
+                    </p>
+                    <p class="card-text my-0">
+                        <span class="fw-bold">
+                            Weekend Gross:
+                        </span>
+                        £{{ weekend_gross }}
+                    </p>
+                    <p class="card-text my-0">
+                        <span class="fw-bold">
+                            Distributor:
+                        </span>
+                        {{ distributor }}
+                    </p>
+                    <p class="card-text my-0">
+                        <span class="fw-bold">
+                            Change on Last Week:
+                        </span>
+                        {{ weekly_change }}%
+                    </p>
+                    <p class="card-text my-0">
+                        <span class="fw-bold">
+                            Weeks on Release:
+                        </span>
+                        {{ weeks_on_release }}
+                    </p>
+                    <p class="card-text my-0">
+                        <span class="fw-bold">
+                            Number of Cinemas:
+                        </span>
+                        {{ cinema_number }}
+                    </p>
+                    <p class="card-text my-0">
+                        <span class="fw-bold">
+                            Site Average:
+                        </span>
+                        £{{ site_average }}
+                    </p>
+                    <p class="card-text my-0">
+                        <span class="fw-bold">
+                            Total Gross to Date:
+                        </span>
+                        £{{ total_gross }}
+                    </p>
+                </div>
 
                 <a class="btn btn-lg btn-info" href="{{ imdb }}" target="_blank">
                     IMDB

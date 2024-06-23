@@ -23,7 +23,7 @@ def find_latest_file() -> None:
     global WEEKEND_DATE
     # skip download for development only (we don't need to download the newest version every time)
     # TODO: remove this
-    # return True
+    return
     response = requests.get(url=constants.BFI_URL)
     soup = BeautifulSoup(response.text, "html.parser")
     latestFileLink = soup.find("a", {"class": re.compile("FileDownload__Link")})
@@ -93,13 +93,13 @@ def send_report(user_name: str, email_address: str):
 def main():
 
     try:
-        # find_latest_file()
-        # logger.info("Download Complete")
-        # file_hash: str = helpers.gen_file_hash()
+        find_latest_file()
+        logger.info("Download Complete")
+        file_hash: str = helpers.gen_file_hash()
 
-        # if helpers.is_file_new(file_hash):
-        #     # TODO: implement some way to handle this error and delay the program's execution for another day
-        #     pass
+        if helpers.is_file_new(file_hash):
+            # TODO: implement some way to handle this error and delay the program's execution for another day
+            pass
 
         top_15_film_list = helpers.parse_films("top_15")
         other_uk_film_list = helpers.parse_films("other_uk")
