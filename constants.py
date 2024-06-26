@@ -1,10 +1,14 @@
+LOGGING_FORMAT = "[%(asctime)s] [%(levelname)s] - %(message)s"
+LOGGING_FILE = "logs/{filename}.log"
+LOGGING_SEPARATOR = "\n\n-------------------------\n"
+
 BFI_URL = "https://www.bfi.org.uk/industry-data-insights/weekend-box-office-figures"
 
 FILE_DOWNLOAD_LOCATION = "downloads/latest_report.xlsx"
 
 
-MIN_COL=1
-MAX_COL=10
+MIN_COL = 1
+MAX_COL = 10
 
 
 BASE_HTML_TEMPLATE = "_base.html"
@@ -36,4 +40,3 @@ TMDB_DETAILS_API_URL = "https://api.themoviedb.org/3/movie/{id}"
 
 TMDB_IMG_URL = "https://image.tmdb.org/t/p/w200{filename}"
 IMDB_URL = "https://www.imdb.com/title/{id}"
-

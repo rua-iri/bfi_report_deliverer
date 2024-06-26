@@ -7,10 +7,21 @@ import constants
 import helpers
 import os
 from dotenv import load_dotenv
+import time
 
+LOGGING_FILE = constants.LOGGING_FILE.format(filename=time.strftime("%d-%m-%Y"))
+
+with open(LOGGING_FILE, "a") as file:
+    file.write(constants.LOGGING_SEPARATOR)
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(
+    level=logging.INFO,
+    filename=LOGGING_FILE,
+    filemode="a",
+    format=constants.LOGGING_FORMAT,
+)
+
 
 WEEKEND_DATE = ""
 load_dotenv()
@@ -21,9 +32,11 @@ def find_latest_file() -> None:
     Scrape the BFI's website to find a link to the latest report
     """
     global WEEKEND_DATE
+
     # skip download for development only (we don't need to download the newest version every time)
     # TODO: remove this
     return
+
     response = requests.get(url=constants.BFI_URL)
     soup = BeautifulSoup(response.text, "html.parser")
     latestFileLink = soup.find("a", {"class": re.compile("FileDownload__Link")})
@@ -93,13 +106,19 @@ def send_report(user_name: str, email_address: str):
 def main():
 
     try:
+        logger.info("BFI Report Deliverer Start")
+        logger.info("Finding Latest file")
         find_latest_file()
-        logger.info("Download Complete")
+        logger.info("File Download Complete")
         file_hash: str = helpers.gen_file_hash()
 
-        if helpers.is_file_new(file_hash):
-            # TODO: implement some way to handle this error and delay the program's execution for another day
-            pass
+        # stop program if file matches previous version
+        if not helpers.is_file_new(file_hash):
+            logger.warning("File hash matches previous file")
+            logger.info("Exiting...")
+            return
+
+        logger.info("File hash does not match previous file")
 
         top_15_film_list = helpers.parse_films("top_15")
         other_uk_film_list = helpers.parse_films("other_uk")
@@ -110,8 +129,10 @@ def main():
             other_new_film_list=other_new_film_list,
             weekend_date=WEEKEND_DATE,
         )
+        logger.info("HTML Report Generated")
+
         helpers.generate_pdf_report()
-        logger.info("Report Generated")
+        logger.info("PDF Report Generated")
 
         # user_list = helpers.get_subscribers()
         # logger.info("User List Generated")
