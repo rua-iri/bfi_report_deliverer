@@ -266,6 +266,10 @@ def is_file_new(file_hash: str) -> bool:
     else:
         return False
 
+def initialise_logs(file_name: str) -> None:
+    with open(file_name, "a") as file:
+        file.write(constants.LOGGING_SEPARATOR)
+
 
 if __name__ == "__main__":
     # is_file_new("67089608790baa07d928c8d5f51b5c28")

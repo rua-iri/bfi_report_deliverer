@@ -1,6 +1,6 @@
 LOGGING_FORMAT = "[%(asctime)s] [%(levelname)s] - %(message)s"
 LOGGING_FILE = "logs/{filename}.log"
-LOGGING_SEPARATOR = "\n\n-------------------------\n"
+LOGGING_SEPARATOR = "-------------------------\n"
 
 BFI_URL = "https://www.bfi.org.uk/industry-data-insights/weekend-box-office-figures"
 

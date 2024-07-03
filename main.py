@@ -11,8 +11,7 @@ import time
 
 LOGGING_FILE = constants.LOGGING_FILE.format(filename=time.strftime("%d-%m-%Y"))
 
-with open(LOGGING_FILE, "a") as file:
-    file.write(constants.LOGGING_SEPARATOR)
+helpers.initialise_logs(file_name=LOGGING_FILE)
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(
@@ -112,11 +111,11 @@ def main():
         logger.info("File Download Complete")
         file_hash: str = helpers.gen_file_hash()
 
-        # stop program if file matches previous version
-        if not helpers.is_file_new(file_hash):
-            logger.warning("File hash matches previous file")
-            logger.info("Exiting...")
-            return
+        # # stop program if file matches previous version
+        # if not helpers.is_file_new(file_hash):
+        #     logger.warning("File hash matches previous file")
+        #     logger.info("Exiting...")
+        #     return
 
         logger.info("File hash does not match previous file")
 
