@@ -134,23 +134,23 @@ def send_report(user_name: str, email_address: str):
 
 
 def main():
-
     try:
         logger.info("BFI Report Deliverer Start")
         logger.info("Finding Latest file")
         find_latest_file()
         logger.info("File Download Complete")
         file_hash: str = helpers.gen_file_hash()
+        logger.info(f"File Hash: {file_hash}")
 
         # stop program if file matches previous version
-        if not helpers.is_file_new(file_hash):
-            pass
-        #     logger.warning("File hash matches previous file")
-        #     logger.info("Exiting...")
-        #     return
+        if helpers.is_prod() and not helpers.is_file_new(file_hash):
+            logger.error("File hash matches previous file")
+            logger.info("Exiting...")
+            return
 
         logger.info("File hash does not match previous file")
 
+        # parse each group of films
         logger.info("Parsing: top_15")
         top_15_film_list = helpers.parse_films("top_15")
 
@@ -171,21 +171,21 @@ def main():
         helpers.generate_pdf_report()
         logger.info("PDF Report Generated")
 
-        # user_list = helpers.get_subscribers()
-        # logger.info("User List Generated")
+        user_list = helpers.get_subscribers()
+        logger.info("User List Generated")
 
-        # # TODO: uncomment this later
-        # for user in user_list:
-        #     send_report(
-        #         user_name=user["first_name"],
-        #         email_address=user["email"]
-        #     )
+        if helpers.is_prod():
+            for user in user_list:
+                send_report(
+                    user_name=user["first_name"],
+                    email_address=user["email"]
+                )
 
-        #     logger.info(
-        #         f"Report Sent to {user['first_name']} {user['last_name']}"
-        #     )
+                logger.info(
+                    f"Report Sent to {user['first_name']} {user['last_name']}"
+                )
 
-        logger.info("Reports Sent")
+            logger.info("Reports Sent")
 
     except Exception as e:
         logger.error(e)

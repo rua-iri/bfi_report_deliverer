@@ -18,24 +18,6 @@ PDF_REPORT_LOCATION = "reports/report.pdf"
 
 HTML_PAGE_BREAK = "<div style='page-break-after: always;'></div>"
 
-
-SELECT_USERS_QUERY = "SELECT * FROM users WHERE is_active = TRUE;"
-CREATE_TABLE_QUERY = """
-CREATE TABLE users
-(
-id INTEGER PRIMARY KEY,
-first_name TEXT,
-last_name TEXT,
-email TEXT,
-is_active BOOL
-)
-"""
-
-
-SELECT_FILES_QUERY = "SELECT * FROM files WHERE hash = ?"
-INSERT_FILE_QUERY = "INSERT INTO files (hash, timestamp) VALUES (?, ?)"
-
-
 TMDB_SEARCH_API_URL = "https://api.themoviedb.org/3/search/movie?query={query}"
 TMDB_DETAILS_API_URL = "https://api.themoviedb.org/3/movie/{id}"
 

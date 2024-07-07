@@ -3,10 +3,8 @@ import json
 import os
 from time import time as unix_timestamp
 import openpyxl
-import openpyxl.workbook
-import openpyxl.worksheet
-import openpyxl.worksheet.worksheet
 import constants
+import queries
 import pdfkit
 import sqlite3
 import jinja2
@@ -221,7 +219,7 @@ def get_subscribers() -> list:
     """
     cursor = con.cursor()
     res = cursor.execute(
-        constants.SELECT_USERS_QUERY,
+        queries.SELECT_USERS_QUERY,
     )
     user_list = res.fetchall()
 
@@ -247,7 +245,7 @@ def create_db():
     """Create users table in database (should only run on initialising repository)
     """
     cursor = con.cursor()
-    res = cursor.execute(constants.CREATE_TABLE_QUERY)
+    res = cursor.execute(queries.CREATE_TABLE_QUERY)
     res.fetchall()
 
 
@@ -281,14 +279,14 @@ def is_file_new(file_hash: str) -> bool:
     """
 
     cursor = con.cursor()
-    result = cursor.execute(constants.SELECT_FILES_QUERY,
+    result = cursor.execute(queries.SELECT_FILES_QUERY,
                             (file_hash,)).fetchall()
     print(result)
     print(not result)
 
     timestamp = int(unix_timestamp())
 
-    cursor.execute(constants.INSERT_FILE_QUERY, (file_hash, timestamp))
+    cursor.execute(queries.INSERT_FILE_QUERY, (file_hash, timestamp))
     con.commit()
 
     if len(result) == 0:
@@ -316,11 +314,20 @@ def convert_to_xlsx(file_path: str):
     import pandas
 
     df = pandas.read_excel(file_path)
-    # df.to_excel(constants.FILE_DOWNLOAD_LOCATION, index=False)
+
     with pandas.ExcelWriter(
-        constants.FILE_DOWNLOAD_LOCATION, mode="w", engine="openpyxl"
+        constants.FILE_DOWNLOAD_LOCATION,
+        mode="w",
+        engine="openpyxl"
     ) as xlsx:
         df.to_excel(xlsx, index=False)
+
+
+def is_prod():
+    if os.getenv("ENV") == "production":
+        return True
+    else:
+        return False
 
 
 if __name__ == "__main__":
