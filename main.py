@@ -34,10 +34,10 @@ def find_latest_file() -> None:
 
     # skip download for development only (we don't need to download the newest version every time)
     # TODO: remove this
-    return
+    # return
 
-    response = requests.get(url=constants.BFI_URL)
-    soup = BeautifulSoup(response.text, "html.parser")
+    response: requests.Response = requests.get(url=constants.BFI_URL)
+    soup: BeautifulSoup = BeautifulSoup(response.text, "html.parser")
     latestFileLink = soup.find("a", {"class": re.compile("FileDownload__Link")})
 
     file_title = soup.find("span", {"class": re.compile("FileDownload__Title")})
@@ -53,10 +53,22 @@ def download_latest_file(download_url: str) -> None:
     logger.info("Downloading file from: " + download_url)
 
     try:
-        response = requests.get(url=download_url)
+        response: requests.Response = requests.get(url=download_url)
 
-        with open(file=constants.FILE_DOWNLOAD_LOCATION, mode="wb") as spreadsheet_file:
+        # save file using original file extension
+        content_disposition: str = response.headers.get("Content-Disposition")
+        file_extension_loc: int = content_disposition.find(".xls") + 1
+        file_extension: str = content_disposition[file_extension_loc:]
+        download_file_name: str = constants.FILE_DOWNLOAD_LOCATION.replace(
+            "xlsx", file_extension
+        )
+
+        with open(file=download_file_name, mode="wb") as spreadsheet_file:
             spreadsheet_file.write(response.content)
+
+        if file_extension == "xls":
+            logger.info("Converting to xlsx format")
+            helpers.convert_to_xlsx(download_file_name)
 
         logger.info("File downloaded successfully")
 
@@ -119,9 +131,13 @@ def main():
 
         logger.info("File hash does not match previous file")
 
+        logger.info("Parsing: top_15")
         top_15_film_list = helpers.parse_films("top_15")
+        logger.info("Parsing: other_uk")
         other_uk_film_list = helpers.parse_films("other_uk")
+        logger.info("Parsing: other_new")
         other_new_film_list = helpers.parse_films("other_new")
+
         helpers.generate_html_report(
             top_15_film_list=top_15_film_list,
             other_uk_film_list=other_uk_film_list,

@@ -2,6 +2,7 @@ from hashlib import md5 as md5_hash
 import json
 import os
 from time import time as unix_timestamp
+import traceback
 import openpyxl
 import openpyxl.workbook
 import openpyxl.worksheet
@@ -127,6 +128,7 @@ def parse_films(film_group: str) -> list:
         film_list.append(film)
 
     return film_list
+    
 
 
 def render_html(film_list: list) -> str:
@@ -266,9 +268,26 @@ def is_file_new(file_hash: str) -> bool:
     else:
         return False
 
+
 def initialise_logs(file_name: str) -> None:
     with open(file_name, "a") as file:
         file.write(constants.LOGGING_SEPARATOR)
+
+
+
+
+def convert_to_xlsx(file_path: str):
+    """Convert spreadsheet from xls format to xlsx so that it can be read
+
+    Args:
+        file_path (str): the path to the xls file
+    """
+    import pandas
+    writer = pandas.E
+    df = pandas.read_excel(file_path)
+    df.to_excel(constants.FILE_DOWNLOAD_LOCATION, index=False)
+
+
 
 
 if __name__ == "__main__":

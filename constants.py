@@ -15,7 +15,7 @@ BASE_HTML_TEMPLATE = "_base.html"
 CARD_TEMPLATE = "card.html"
 HTML_REPORT_LOCATION = "reports/report.html"
 PDF_REPORT_LOCATION = "reports/report.pdf"
-HTML_EMAIL_LOCATION = "email.html"
+
 
 SELECT_USERS_QUERY = "SELECT * FROM users WHERE is_active = TRUE;"
 CREATE_TABLE_QUERY = """
@@ -29,7 +29,6 @@ is_active BOOL
 )
 """
 
-FROM_EMAIL = "example@example.com"
 
 SELECT_FILES_QUERY = "SELECT * FROM files WHERE hash = ?"
 INSERT_FILE_QUERY = "INSERT INTO files (hash, timestamp) VALUES (?, ?)"
