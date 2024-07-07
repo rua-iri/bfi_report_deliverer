@@ -52,8 +52,13 @@ def find_latest_file() -> None:
 
 
 def download_latest_file(download_url: str) -> None:
-    """
-    Download the latest copy of the BFI's weekly report
+    """Download the latest copy of the BFI's weekly report
+
+    Args:
+        download_url (str): the link to the file
+
+    Raises:
+        e: an exception which might occur while downloading the file
     """
     logger.info("Downloading file from: " + download_url)
 
@@ -84,8 +89,14 @@ def download_latest_file(download_url: str) -> None:
 
 
 def send_report(user_name: str, email_address: str):
-    """
-    Send email to subscriber with report file attached
+    """Send email to subscriber with report file attached
+
+    Args:
+        user_name (str): the name of the user
+        email_address (str): the email address of the user
+
+    Raises:
+        e: exception which might occur while sending the email
     """
     try:
         resend.api_key = os.getenv("RESEND_API_KEY")
@@ -133,7 +144,6 @@ def main():
 
         # stop program if file matches previous version
         if not helpers.is_file_new(file_hash):
-            # TODO: remove this
             pass
         #     logger.warning("File hash matches previous file")
         #     logger.info("Exiting...")
@@ -143,8 +153,10 @@ def main():
 
         logger.info("Parsing: top_15")
         top_15_film_list = helpers.parse_films("top_15")
+
         logger.info("Parsing: other_uk")
         other_uk_film_list = helpers.parse_films("other_uk")
+
         logger.info("Parsing: other_new")
         other_new_film_list = helpers.parse_films("other_new")
 

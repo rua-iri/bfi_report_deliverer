@@ -81,6 +81,17 @@ def get_film_data(film: Film) -> dict:
 
 
 def parse_films(film_group: str) -> list:
+    """Parse the spreadsheet to get top films
+
+    Args:
+        film_group (str): The group of films being parsed for
+
+    Raises:
+        Exception: exception if the film group passed is invalid
+
+    Returns:
+        list: a list of top films for a given category
+    """
     film_list = []
 
     sheet = openpyxl.load_workbook(
@@ -167,8 +178,13 @@ def generate_html_report(
     other_new_film_list: list,
     weekend_date: str,
 ) -> None:
-    """
-    Generate the new html report using the html templates
+    """Generate the new html report using the html templates
+
+    Args:
+        top_15_film_list (list): List of top 15 films
+        other_uk_film_list (list): List of other top uk films
+        other_new_film_list (list): List of other top new films
+        weekend_date (str): The date of the previous weekend
     """
     base_html = jinja_environment.get_template(constants.BASE_HTML_TEMPLATE)
 
@@ -189,8 +205,7 @@ def generate_html_report(
 
 
 def generate_pdf_report() -> None:
-    """
-    Generate the new pdf report using the html template
+    """Generate the new pdf report using the html template
     """
     pdfkit.from_file(
         input=constants.HTML_REPORT_LOCATION,
@@ -198,9 +213,11 @@ def generate_pdf_report() -> None:
     )
 
 
-def get_subscribers():
-    """
-    Query database for list of all currently active subscribers
+def get_subscribers() -> list:
+    """Query database for list of all currently active subscribers
+
+    Returns:
+        list: list of all currently subscribed users
     """
     cursor = con.cursor()
     res = cursor.execute(
@@ -212,8 +229,14 @@ def get_subscribers():
 
 
 def generate_email_body(user_name: str, week_number: str) -> str:
-    """
-    Generate the body of the email to be sent to subscribers
+    """Generate the body of the email to be sent to subscribers
+
+    Args:
+        user_name (str): The user to whom the email will be sent
+        week_number (str): The date of the previous weekend
+
+    Returns:
+        str: html content of the email
     """
 
     email_template = jinja_environment.get_template("email.html")
@@ -221,8 +244,7 @@ def generate_email_body(user_name: str, week_number: str) -> str:
 
 
 def create_db():
-    """
-    Create users table in database (should only run on initialising repository)
+    """Create users table in database (should only run on initialising repository)
     """
     cursor = con.cursor()
     res = cursor.execute(constants.CREATE_TABLE_QUERY)
@@ -276,6 +298,11 @@ def is_file_new(file_hash: str) -> bool:
 
 
 def initialise_logs(file_name: str) -> None:
+    """Initialise the logs file when program is first run
+
+    Args:
+        file_name (str): The name of the file (composed of today's date)
+    """
     with open(file_name, "a") as file:
         file.write(constants.LOGGING_SEPARATOR)
 
