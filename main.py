@@ -9,7 +9,9 @@ import os
 from dotenv import load_dotenv
 import time
 
-LOGGING_FILE = constants.LOGGING_FILE.format(filename=time.strftime("%d-%m-%Y"))
+LOGGING_FILE = constants.LOGGING_FILE.format(
+    filename=time.strftime("%d-%m-%Y")
+)
 
 helpers.initialise_logs(file_name=LOGGING_FILE)
 
@@ -32,15 +34,18 @@ def find_latest_file() -> None:
     """
     global WEEKEND_DATE
 
-    # skip download for development only (we don't need to download the newest version every time)
+    # skip download for development only
+    # (we don't need to download the newest version every time)
     # TODO: remove this
     # return
 
     response: requests.Response = requests.get(url=constants.BFI_URL)
     soup: BeautifulSoup = BeautifulSoup(response.text, "html.parser")
-    latestFileLink = soup.find("a", {"class": re.compile("FileDownload__Link")})
+    latestFileLink = soup.find(
+        "a", {"class": re.compile("FileDownload__Link")})
 
-    file_title = soup.find("span", {"class": re.compile("FileDownload__Title")})
+    file_title = soup.find(
+        "span", {"class": re.compile("FileDownload__Title")})
     WEEKEND_DATE = file_title.text.split("office report: ")[1]
 
     download_latest_file(download_url=latestFileLink.get("href"))
@@ -102,7 +107,10 @@ def send_report(user_name: str, email_address: str):
             "subject": email_subject,
             "html": html_content,
             "attachments": [
-                {"filename": f"{report_filename}_report.pdf", "content": attachment}
+                {
+                    "filename": f"{report_filename}_report.pdf",
+                    "content": attachment
+                }
             ],
         }
 
@@ -123,8 +131,10 @@ def main():
         logger.info("File Download Complete")
         file_hash: str = helpers.gen_file_hash()
 
-        # # stop program if file matches previous version
-        # if not helpers.is_file_new(file_hash):
+        # stop program if file matches previous version
+        if not helpers.is_file_new(file_hash):
+            # TODO: remove this
+            pass
         #     logger.warning("File hash matches previous file")
         #     logger.info("Exiting...")
         #     return
@@ -152,10 +162,16 @@ def main():
         # user_list = helpers.get_subscribers()
         # logger.info("User List Generated")
 
-        # TODO: uncomment this later
+        # # TODO: uncomment this later
         # for user in user_list:
-        #     send_report(user_name=user["first_name"], email_address=user["email"])
-        #     logger.info(f"Report Sent to {user['first_name']} {user['last_name']}")
+        #     send_report(
+        #         user_name=user["first_name"],
+        #         email_address=user["email"]
+        #     )
+
+        #     logger.info(
+        #         f"Report Sent to {user['first_name']} {user['last_name']}"
+        #     )
 
         logger.info("Reports Sent")
 

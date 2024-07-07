@@ -27,7 +27,7 @@ class Film:
         self.total_gross = "{:,}".format(total_gross)
 
     def set_weekly_change(self, weekly_change):
-        if type(weekly_change) == float:
+        if type(weekly_change) is float:
             self.weekly_change = round(weekly_change, 2)
         else:
             self.weekly_change = weekly_change

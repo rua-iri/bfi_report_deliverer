@@ -2,7 +2,6 @@ from hashlib import md5 as md5_hash
 import json
 import os
 from time import time as unix_timestamp
-import traceback
 import openpyxl
 import openpyxl.workbook
 import openpyxl.worksheet
@@ -37,7 +36,8 @@ dotenv.load_dotenv()
 con = sqlite3.connect("bfi_report.db")
 con.row_factory = sqlite3.Row
 
-jinja_environment = jinja2.Environment(loader=jinja2.FileSystemLoader("templates"))
+jinja_environment = jinja2.Environment(
+    loader=jinja2.FileSystemLoader("templates"))
 
 
 def get_film_data(film: Film) -> dict:
@@ -74,14 +74,19 @@ def get_film_data(film: Film) -> dict:
 
     film_data = json.loads(response.text)
 
-    return {"poster": film_data["poster_path"], "imdb_id": film_data["imdb_id"]}
+    return {
+        "poster": film_data["poster_path"],
+        "imdb_id": film_data["imdb_id"]
+    }
 
 
 def parse_films(film_group: str) -> list:
     film_list = []
 
     sheet = openpyxl.load_workbook(
-        filename=constants.FILE_DOWNLOAD_LOCATION, read_only=True, data_only=True
+        filename=constants.FILE_DOWNLOAD_LOCATION,
+        read_only=True,
+        data_only=True
     ).active
 
     if film_group == "top_15":
@@ -106,7 +111,7 @@ def parse_films(film_group: str) -> list:
         )
     ):
 
-        if row[RANK] == None:
+        if row[RANK] is None:
             if film_group == "other_uk":
                 other_uk_row.append(index + other_uk_row[0])
             break
@@ -143,15 +148,15 @@ def render_html(film_list: list) -> str:
 
         film_on_page_count += 1
         if page_count > 0 and film_on_page_count == 4:
-            film_list_contents += "<div style='page-break-after: always;'></div>"
+            film_list_contents += constants.HTML_PAGE_BREAK
             film_on_page_count = 0
             page_count += 1
         elif page_count == 0 and film_on_page_count == 3:
-            film_list_contents += "<div style='page-break-after: always;'></div>"
+            film_list_contents += constants.HTML_PAGE_BREAK
             film_on_page_count = 0
             page_count += 1
 
-    film_list_contents += "<div style='page-break-after: always;'></div>"
+    film_list_contents += constants.HTML_PAGE_BREAK
 
     return film_list_contents
 
@@ -188,7 +193,8 @@ def generate_pdf_report() -> None:
     Generate the new pdf report using the html template
     """
     pdfkit.from_file(
-        input=constants.HTML_REPORT_LOCATION, output_path=constants.PDF_REPORT_LOCATION
+        input=constants.HTML_REPORT_LOCATION,
+        output_path=constants.PDF_REPORT_LOCATION
     )
 
 
@@ -253,7 +259,8 @@ def is_file_new(file_hash: str) -> bool:
     """
 
     cursor = con.cursor()
-    result = cursor.execute(constants.SELECT_FILES_QUERY, (file_hash,)).fetchall()
+    result = cursor.execute(constants.SELECT_FILES_QUERY,
+                            (file_hash,)).fetchall()
     print(result)
     print(not result)
 

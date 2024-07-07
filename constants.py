@@ -16,6 +16,8 @@ CARD_TEMPLATE = "card.html"
 HTML_REPORT_LOCATION = "reports/report.html"
 PDF_REPORT_LOCATION = "reports/report.pdf"
 
+HTML_PAGE_BREAK = "<div style='page-break-after: always;'></div>"
+
 
 SELECT_USERS_QUERY = "SELECT * FROM users WHERE is_active = TRUE;"
 CREATE_TABLE_QUERY = """
