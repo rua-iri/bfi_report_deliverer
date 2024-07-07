@@ -128,7 +128,6 @@ def parse_films(film_group: str) -> list:
         film_list.append(film)
 
     return film_list
-    
 
 
 def render_html(film_list: list) -> str:
@@ -274,8 +273,6 @@ def initialise_logs(file_name: str) -> None:
         file.write(constants.LOGGING_SEPARATOR)
 
 
-
-
 def convert_to_xlsx(file_path: str):
     """Convert spreadsheet from xls format to xlsx so that it can be read
 
@@ -283,11 +280,13 @@ def convert_to_xlsx(file_path: str):
         file_path (str): the path to the xls file
     """
     import pandas
-    writer = pandas.E
+
     df = pandas.read_excel(file_path)
-    df.to_excel(constants.FILE_DOWNLOAD_LOCATION, index=False)
-
-
+    # df.to_excel(constants.FILE_DOWNLOAD_LOCATION, index=False)
+    with pandas.ExcelWriter(
+        constants.FILE_DOWNLOAD_LOCATION, mode="w", engine="openpyxl"
+    ) as xlsx:
+        df.to_excel(xlsx, index=False)
 
 
 if __name__ == "__main__":
