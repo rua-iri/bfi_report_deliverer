@@ -38,14 +38,18 @@ touch .env
 ```
 
 ```yaml
+ENV=staging
+
 RESEND_API_KEY=<API_KEY>
 
 FROM_EMAIL=<EMAIL_ADDRESS>
+
+TMBD_API_KEY=<API_KEY>
 ```
 
 ### Create required directories
 ```bash
-mkdir downloads reports
+mkdir reports
 ```
 
 ### Initialise database
@@ -59,4 +63,11 @@ python3 setup.py
 ```bash 
 python3 main.py
 ```
+
+### Run tests
+
+```bash
+python3 -m unittest -v test
+```
+
 
