@@ -38,7 +38,7 @@ jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader("templates"))
 
 
-def get_film_data(film: Film) -> dict:
+def fetch_film_data(film: Film) -> dict:
     """Fetch film data from TMDB api
 
     Args:
@@ -137,7 +137,7 @@ def parse_films(film_group: str) -> list:
             site_average=row[SITE_AVERAGE],
             total_gross=row[TOTAL_GROSS],
         )
-        film_data = get_film_data(film)
+        film_data = fetch_film_data(film)
         film.set_film_data(film_data)
         film_list.append(film)
 
@@ -328,8 +328,3 @@ def is_prod():
         return True
     else:
         return False
-
-
-if __name__ == "__main__":
-    # is_file_new("67089608790baa07d928c8d5f51b5c28")
-    get_film_data("The Fall Guy")

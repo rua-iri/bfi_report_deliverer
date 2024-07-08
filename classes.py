@@ -1,32 +1,33 @@
+from typing import Union
 from constants import TMDB_IMG_URL, IMDB_URL
 
 
 class Film:
     def __init__(
         self,
-        rank,
-        title,
-        origin_country,
-        weekend_gross,
-        distributor,
-        weekly_change,
-        weeks_on_release,
-        cinema_number,
-        site_average,
-        total_gross,
+        rank: int,
+        title: str,
+        origin_country: str,
+        weekend_gross: int,
+        distributor: str,
+        weekly_change: Union[float, str],
+        weeks_on_release: int,
+        cinema_number: int,
+        site_average: int,
+        total_gross: int,
     ):
-        self.rank = rank
-        self.title = title
-        self.origin_country = origin_country
-        self.weekend_gross = "{:,}".format(weekend_gross)
-        self.distributor = distributor
+        self.rank: int = rank
+        self.title: str = title
+        self.origin_country: str = origin_country
+        self.weekend_gross: str = "{:,}".format(weekend_gross)
+        self.distributor: str = distributor
         self.set_weekly_change(weekly_change)
-        self.weeks_on_release = weeks_on_release
-        self.cinema_number = cinema_number
-        self.site_average = "{:,}".format(site_average)
-        self.total_gross = "{:,}".format(total_gross)
+        self.weeks_on_release: int = weeks_on_release
+        self.cinema_number: int = cinema_number
+        self.site_average: str = "{:,}".format(site_average)
+        self.total_gross: str = "{:,}".format(total_gross)
 
-    def set_weekly_change(self, weekly_change):
+    def set_weekly_change(self, weekly_change: Union[float, str]):
         if type(weekly_change) is float:
             self.weekly_change = round(weekly_change, 2)
         else:
