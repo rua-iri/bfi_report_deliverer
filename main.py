@@ -9,7 +9,7 @@ import os
 from dotenv import load_dotenv
 import time
 
-LOGGING_FILE = constants.LOGGING_FILE.format(
+LOGGING_FILE = constants.LOGGING_FILENAME.format(
     filename=time.strftime("%d-%m-%Y")
 )
 
@@ -24,6 +24,7 @@ logging.basicConfig(
 )
 
 
+IS_PROD = os.getenv("ENV") == "production"
 WEEKEND_DATE = ""
 load_dotenv()
 
@@ -143,7 +144,7 @@ def main():
         logger.info(f"File Hash: {file_hash}")
 
         # stop program if file matches previous version
-        if helpers.is_prod() and not helpers.is_file_new(file_hash):
+        if IS_PROD and not helpers.is_file_new(file_hash):
             logger.error("File hash matches previous file")
             logger.info("Exiting...")
             return
@@ -160,6 +161,7 @@ def main():
         logger.info("Parsing: other_new")
         other_new_film_list = helpers.parse_films("other_new")
 
+        # generate html report and convert to pdf
         helpers.generate_html_report(
             top_15_film_list=top_15_film_list,
             other_uk_film_list=other_uk_film_list,
@@ -174,7 +176,7 @@ def main():
         user_list = helpers.get_subscribers()
         logger.info("User List Generated")
 
-        if helpers.is_prod():
+        if IS_PROD:
             for user in user_list:
                 send_report(
                     user_name=user["first_name"],

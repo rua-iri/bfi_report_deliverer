@@ -1,5 +1,5 @@
 LOGGING_FORMAT = "[%(asctime)s] [%(levelname)s] - %(message)s"
-LOGGING_FILE = "logs/{filename}.log"
+LOGGING_FILENAME = "logs/{filename}.log"
 LOGGING_SEPARATOR = "-------------------------\n"
 
 BFI_URL = "https://www.bfi.org.uk/industry-data-insights/weekend-box-office-figures"
@@ -9,6 +9,9 @@ FILE_DOWNLOAD_LOCATION = "downloads/latest_report.xlsx"
 
 MIN_COL = 1
 MAX_COL = 10
+
+TOP_15_MIN = 3
+TOP_15_MAX = 17
 
 
 BASE_HTML_TEMPLATE = "_base.html"

@@ -25,7 +25,6 @@ from mapping import (
 )
 
 
-top_15_row: list = [3, 17]
 other_uk_row: list = [22]
 
 dotenv.load_dotenv()
@@ -78,7 +77,10 @@ def fetch_film_data(film: Film) -> dict:
     }
 
 
-def parse_films(film_group: str) -> list:
+def parse_films(
+        film_group: str,
+        filename: str = constants.FILE_DOWNLOAD_LOCATION
+) -> list:
     """Parse the spreadsheet to get top films
 
     Args:
@@ -93,14 +95,14 @@ def parse_films(film_group: str) -> list:
     film_list = []
 
     sheet = openpyxl.load_workbook(
-        filename=constants.FILE_DOWNLOAD_LOCATION,
+        filename=filename,
         read_only=True,
         data_only=True
     ).active
 
     if film_group == "top_15":
-        MIN_ROW = top_15_row[0]
-        MAX_ROW = top_15_row[1]
+        MIN_ROW = constants.TOP_15_MIN
+        MAX_ROW = constants.TOP_15_MAX
     elif film_group == "other_uk":
         MIN_ROW = other_uk_row[0]
         MAX_ROW = sheet.max_row
@@ -321,10 +323,3 @@ def convert_to_xlsx(file_path: str):
         engine="openpyxl"
     ) as xlsx:
         df.to_excel(xlsx, index=False)
-
-
-def is_prod():
-    if os.getenv("ENV") == "production":
-        return True
-    else:
-        return False
