@@ -5,16 +5,14 @@ import resend
 from bs4 import BeautifulSoup
 import constants
 import helpers
-import os
+from os import environ
 from dotenv import load_dotenv
 import time
 
 LOGGING_FILE = constants.LOGGING_FILENAME.format(
     filename=time.strftime("%d-%m-%Y")
 )
-
 helpers.initialise_logs(file_name=LOGGING_FILE)
-
 logger = logging.getLogger(__name__)
 logging.basicConfig(
     level=logging.INFO,
@@ -23,33 +21,10 @@ logging.basicConfig(
     format=constants.LOGGING_FORMAT,
 )
 
-
-IS_PROD = os.getenv("ENV") == "production"
-WEEKEND_DATE = ""
+IS_PROD = environ.get("ENV") == "production"
 load_dotenv()
 
-
-def find_latest_file() -> None:
-    """
-    Scrape the BFI's website to find a link to the latest report
-    """
-    global WEEKEND_DATE
-
-    # skip download for development only
-    # (we don't need to download the newest version every time)
-    # TODO: remove this
-    # return
-
-    response: requests.Response = requests.get(url=constants.BFI_URL)
-    soup: BeautifulSoup = BeautifulSoup(response.text, "html.parser")
-    latestFileLink = soup.find(
-        "a", {"class": re.compile("FileDownload__Link")})
-
-    file_title = soup.find(
-        "span", {"class": re.compile("FileDownload__Title")})
-    WEEKEND_DATE = file_title.text.split("office report: ")[1]
-
-    download_latest_file(download_url=latestFileLink.get("href"))
+WEEKEND_DATE = ""
 
 
 def download_latest_file(download_url: str) -> None:
@@ -89,6 +64,29 @@ def download_latest_file(download_url: str) -> None:
         raise e
 
 
+def find_latest_file() -> None:
+    """
+    Scrape the BFI's website to find a link to the latest report
+    """
+    global WEEKEND_DATE
+
+    # skip download for development only
+    # (we don't need to download the newest version every time)
+    # TODO: remove this
+    # return
+
+    response: requests.Response = requests.get(url=constants.BFI_URL)
+    soup: BeautifulSoup = BeautifulSoup(response.text, "html.parser")
+    latestFileLink = soup.find(
+        "a", {"class": re.compile("FileDownload__Link")})
+
+    file_title = soup.find(
+        "span", {"class": re.compile("FileDownload__Title")})
+    WEEKEND_DATE = file_title.text.split("office report: ")[1]
+
+    download_latest_file(download_url=latestFileLink.get("href"))
+
+
 def send_report(user_name: str, email_address: str):
     """Send email to subscriber with report file attached
 
@@ -100,7 +98,7 @@ def send_report(user_name: str, email_address: str):
         e: exception which might occur while sending the email
     """
     try:
-        resend.api_key = os.getenv("RESEND_API_KEY")
+        resend.api_key = environ.get("RESEND_API_KEY")
 
         email_subject = f"BFI Report: {WEEKEND_DATE}"
 
@@ -114,7 +112,7 @@ def send_report(user_name: str, email_address: str):
         report_filename = WEEKEND_DATE.replace(" ", "_")
 
         parameters = {
-            "from": os.getenv("FROM_EMAIL"),
+            "from": environ.get("FROM_EMAIL"),
             "to": [email_address],
             "subject": email_subject,
             "html": html_content,

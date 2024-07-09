@@ -1,6 +1,7 @@
 from hashlib import md5 as md5_hash
 import json
-import os
+from os import environ
+from os import remove as delete_file
 from time import time as unix_timestamp
 import openpyxl
 import constants
@@ -9,7 +10,7 @@ import pdfkit
 import sqlite3
 import jinja2
 import requests
-import dotenv
+from dotenv import load_dotenv
 from classes import Film
 from mapping import (
     RANK,
@@ -27,7 +28,7 @@ from mapping import (
 
 other_uk_row: list = [22]
 
-dotenv.load_dotenv()
+load_dotenv()
 
 
 con = sqlite3.connect("bfi_report.db")
@@ -50,7 +51,7 @@ def fetch_film_data(film: Film) -> dict:
         constants.TMDB_SEARCH_API_URL.format(query=film.title.split("(")[0]),
         headers={
             "accept": "application/json",
-            "Authorization": os.environ.get("TMBD_API_KEY"),
+            "Authorization": environ.get("TMBD_API_KEY"),
         },
     )
 
@@ -65,7 +66,7 @@ def fetch_film_data(film: Film) -> dict:
         constants.TMDB_DETAILS_API_URL.format(id=film_id),
         headers={
             "accept": "application/json",
-            "Authorization": os.environ.get("TMBD_API_KEY"),
+            "Authorization": environ.get("TMBD_API_KEY"),
         },
     )
 
@@ -323,3 +324,6 @@ def convert_to_xlsx(file_path: str):
         engine="openpyxl"
     ) as xlsx:
         df.to_excel(xlsx, index=False)
+
+    # delete original xls file as it is no longer required
+    delete_file(file_path)
