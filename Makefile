@@ -1,7 +1,7 @@
 
 
 setup:
-	mkdir reports/ \
+	mkdir reports/ &&\
 	python3 setup.py
 
 test:
