@@ -25,7 +25,9 @@ cd bfi_report_deliverer
 ### Create virtual environment and install requirements
 
 ```bash
-python3 -m venv venv
+python3 -m venv .venv
+
+source .venv/bin/activate
 
 pip3 install -r requirements.txt
 

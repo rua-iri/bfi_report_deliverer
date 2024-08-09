@@ -70,11 +70,6 @@ def find_latest_file() -> None:
     """
     global WEEKEND_DATE
 
-    # skip download for development only
-    # (we don't need to download the newest version every time)
-    # TODO: remove this
-    # return
-
     response: requests.Response = requests.get(url=constants.BFI_URL)
     soup: BeautifulSoup = BeautifulSoup(response.text, "html.parser")
     latestFileLink = soup.find(
