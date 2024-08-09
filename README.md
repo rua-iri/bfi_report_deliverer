@@ -47,16 +47,11 @@ FROM_EMAIL=<EMAIL_ADDRESS>
 TMBD_API_KEY=<API_KEY>
 ```
 
-### Create required directories
-```bash
-mkdir reports
-```
 
-### Initialise database
-```bash
-python3 setup.py
+### Run Setup
 ```
-
+make setup
+```
 
 ### Run program
 
@@ -67,7 +62,7 @@ python3 main.py
 ### Run tests
 
 ```bash
-python3 -m unittest -v test
+make test
 ```
 
 
