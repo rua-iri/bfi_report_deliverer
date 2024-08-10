@@ -245,10 +245,14 @@ def generate_email_body(user_name: str, week_number: str) -> str:
 
 
 def create_db():
-    """Create users table in database (should only run on initialising repository)
+    """Create users & files table in database
+    (should only run on initialising repository)
     """
     cursor = con.cursor()
-    res = cursor.execute(queries.CREATE_TABLE_QUERY)
+    res = cursor.execute(queries.CREATE_USERS_TABLE_QUERY)
+    res.fetchall()
+    cursor = con.cursor()
+    res = cursor.execute(queries.CREATE_FILES_TABLE_QUERY)
     res.fetchall()
 
 

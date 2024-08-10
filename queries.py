@@ -4,7 +4,7 @@ FROM users
 WHERE is_active = TRUE;
 """
 
-CREATE_TABLE_QUERY = """
+CREATE_USERS_TABLE_QUERY = """
 CREATE TABLE "users" (
 "id"	INTEGER,
 "first_name"	TEXT,
@@ -13,6 +13,9 @@ CREATE TABLE "users" (
 "is_active"	BOOL,
 PRIMARY KEY("id")
 );
+"""
+
+CREATE_FILES_TABLE_QUERY = """
 CREATE TABLE "files" (
 "id"	INTEGER,
 "hash"	TEXT,
