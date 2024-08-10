@@ -5,14 +5,20 @@ WHERE is_active = TRUE;
 """
 
 CREATE_TABLE_QUERY = """
-CREATE TABLE users
-(
-id INTEGER PRIMARY KEY,
-first_name TEXT,
-last_name TEXT,
-email TEXT,
-is_active BOOL
-)
+CREATE TABLE "users" (
+"id"	INTEGER,
+"first_name"	TEXT,
+"last_name"	TEXT,
+"email"	TEXT,
+"is_active"	BOOL,
+PRIMARY KEY("id")
+);
+CREATE TABLE "files" (
+"id"	INTEGER,
+"hash"	TEXT,
+"timestamp"	INTEGER,
+PRIMARY KEY("id" AUTOINCREMENT)
+);
 """
 
 SELECT_FILES_QUERY = """SELECT *
