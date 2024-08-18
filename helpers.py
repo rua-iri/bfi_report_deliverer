@@ -208,10 +208,14 @@ def generate_html_report(
 def generate_pdf_report() -> None:
     """Generate the new pdf report using the html template
     """
-    pdfkit.from_file(
-        input=constants.HTML_REPORT_LOCATION,
-        output_path=constants.PDF_REPORT_LOCATION
-    )
+    try:
+        pdfkit.from_file(
+            input=constants.HTML_REPORT_LOCATION,
+            output_path=constants.PDF_REPORT_LOCATION
+        )
+        
+    except Exception as e:
+        raise e
 
 
 def get_subscribers() -> list:

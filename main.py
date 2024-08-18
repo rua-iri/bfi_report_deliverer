@@ -1,5 +1,6 @@
 import logging
 import re
+import traceback
 import requests
 import resend
 from bs4 import BeautifulSoup
@@ -184,6 +185,7 @@ def main():
 
     except Exception as e:
         logger.error(e)
+        logger.error(traceback.format_exc())
 
 
 if __name__ == "__main__":
