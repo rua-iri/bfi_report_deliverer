@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 import time
 
 LOGGING_FILE = constants.LOGGING_FILENAME.format(
-    filename=time.strftime("%d-%m-%Y")
+    filename=time.strftime("%Y-%m-%d")
 )
 helpers.initialise_logs(file_name=LOGGING_FILE)
 logger = logging.getLogger(__name__)
