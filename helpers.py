@@ -1,7 +1,6 @@
 from hashlib import md5 as md5_hash
 import json
 from os import environ
-from os import remove as delete_file
 from time import time as unix_timestamp
 import openpyxl
 import constants
@@ -213,7 +212,7 @@ def generate_pdf_report() -> None:
             input=constants.HTML_REPORT_LOCATION,
             output_path=constants.PDF_REPORT_LOCATION
         )
-        
+
     except Exception as e:
         raise e
 
@@ -333,5 +332,3 @@ def convert_to_xlsx(file_path: str):
     ) as xlsx:
         df.to_excel(xlsx, index=False)
 
-    # delete original xls file as it is no longer required
-    delete_file(file_path)
