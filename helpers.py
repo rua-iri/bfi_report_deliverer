@@ -259,7 +259,7 @@ def create_db():
     res.fetchall()
 
 
-def gen_file_hash() -> str:
+def gen_file_hash(original_filename: str) -> str:
     """Generate a hash of the excel report file downloaded
 
     Returns:
@@ -268,7 +268,7 @@ def gen_file_hash() -> str:
 
     h_lib = md5_hash()
 
-    with open(constants.FILE_DOWNLOAD_LOCATION, "rb") as file:
+    with open(original_filename, "rb") as file:
         chunk = 0
         while chunk != b"":
             chunk = file.read(1024)
@@ -331,4 +331,3 @@ def convert_to_xlsx(file_path: str):
         engine="openpyxl"
     ) as xlsx:
         df.to_excel(xlsx, index=False)
-

@@ -26,6 +26,7 @@ IS_PROD = environ.get("ENV") == "production"
 load_dotenv()
 
 WEEKEND_DATE = ""
+ORIGINAL_FILE = ""
 
 
 def download_latest_file(download_url: str) -> None:
@@ -38,6 +39,7 @@ def download_latest_file(download_url: str) -> None:
         e: an exception which might occur while downloading the file
     """
     logger.info("Downloading file from: " + download_url)
+    global ORIGINAL_FILE
 
     try:
         response: requests.Response = requests.get(url=download_url)
@@ -49,6 +51,8 @@ def download_latest_file(download_url: str) -> None:
         download_file_name: str = constants.FILE_DOWNLOAD_LOCATION.replace(
             "xlsx", file_extension
         )
+
+        ORIGINAL_FILE = download_file_name
 
         with open(file=download_file_name, mode="wb") as spreadsheet_file:
             spreadsheet_file.write(response.content)
@@ -134,11 +138,12 @@ def main():
         logger.info("Finding Latest file")
         find_latest_file()
         logger.info("File Download Complete")
-        file_hash: str = helpers.gen_file_hash()
+        file_hash: str = helpers.gen_file_hash(original_filename=ORIGINAL_FILE)
         logger.info(f"File Hash: {file_hash}")
 
         # stop program if file matches previous version
-        if IS_PROD and not helpers.is_file_new(file_hash):
+        # if IS_PROD and not helpers.is_file_new(file_hash):
+        if not helpers.is_file_new(file_hash):
             logger.error("File hash matches previous file")
             logger.info("Exiting...")
             return
@@ -190,3 +195,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    logger.info("Execution Completed")
