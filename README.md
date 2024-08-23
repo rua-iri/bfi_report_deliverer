@@ -67,4 +67,11 @@ python3 main.py
 make test
 ```
 
+## Examples
+
+![image](https://github.com/user-attachments/assets/47b68a4c-6725-44b5-9d89-9f07b97a3498)
+
+![image](https://github.com/user-attachments/assets/44b1d949-d190-493a-8c9d-fa5ce0faca2e)
+
+
 
