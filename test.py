@@ -543,16 +543,36 @@ class TestMain(unittest.TestCase):
     def __init__(self, methodName: str = "runTest") -> None:
         super().__init__(methodName)
 
-    def test_find_download_file(self):
-        expected_val = True
+    # def test_find_download_file(self):
+    #     expected_val = True
 
-        main.find_latest_file_data()
-        actual_val = does_file_exist(constants.FILE_DOWNLOAD_LOCATION)
+    #     main.find_latest_file_data()
+    #     actual_val = does_file_exist(constants.FILE_DOWNLOAD_LOCATION)
 
-        self.assertEqual(actual_val, expected_val)
+    #     self.assertEqual(actual_val, expected_val)
 
-        if actual_val:
-            delete_file(constants.FILE_DOWNLOAD_LOCATION)
+    #     if actual_val:
+    #         delete_file(constants.FILE_DOWNLOAD_LOCATION)
+
+    def test_find_latest_file_data_valid(self):
+        expected_val = (
+            "https://core-cms.bfi.org.uk/media/.*/download",
+            "\d+-\d+ \w+ \d{4}"
+        )
+        actual_val = main.find_latest_file_data()
+
+        self.assertRegex(actual_val[0], expected_val[0])
+        self.assertRegex(actual_val[1], expected_val[1])
+
+    def test_find_latest_file_data_invalid(self):
+        expected_val = (
+            "https://core-cms.bfi.org.uk/media/.*/download",
+            "\d+-\d+ \w+ \d{4}"
+        )
+        actual_val = main.find_latest_file_data()
+
+        self.assertNotRegex(actual_val[1], expected_val[0])
+        self.assertNotRegex(actual_val[0], expected_val[1])
 
 
 if __name__ == "__main__":
