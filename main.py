@@ -70,7 +70,7 @@ def download_latest_file(download_url: str) -> str:
 
 
 def find_latest_file_data() -> tuple:
-    """Scrape the BFI's website to find a link to the latest report 
+    """Scrape the BFI's website to find a link to the latest report
 
     Raises:
         e: _description_
@@ -83,6 +83,7 @@ def find_latest_file_data() -> tuple:
     try:
         response: requests.Response = requests.get(url=constants.BFI_URL)
         soup: BeautifulSoup = BeautifulSoup(response.text, "html.parser")
+
         latestFileLink = soup.find(
             "a",
             {"class": re.compile("FileDownload__Link")}
@@ -154,9 +155,9 @@ def main():
     try:
         logger.info("BFI Report Deliverer Start")
         logger.info("Finding Latest file")
-        latest_file_link, weekend_date = find_latest_file_data()
+        latest_file_url, weekend_date = find_latest_file_data()
 
-        original_filename = download_latest_file(download_url=latest_file_link)
+        original_filename = download_latest_file(download_url=latest_file_url)
         logger.info("File Download Complete")
 
         file_hash: str = helpers.gen_file_hash(
