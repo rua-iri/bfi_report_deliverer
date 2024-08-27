@@ -546,7 +546,7 @@ class TestMain(unittest.TestCase):
     def test_find_download_file(self):
         expected_val = True
 
-        main.find_latest_file()
+        main.find_latest_file_data()
         actual_val = does_file_exist(constants.FILE_DOWNLOAD_LOCATION)
 
         self.assertEqual(actual_val, expected_val)

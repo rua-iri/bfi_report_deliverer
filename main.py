@@ -25,11 +25,8 @@ logging.basicConfig(
 IS_PROD = environ.get("ENV") == "production"
 load_dotenv()
 
-WEEKEND_DATE = ""
-ORIGINAL_FILE = ""
 
-
-def download_latest_file(download_url: str) -> None:
+def download_latest_file(download_url: str) -> str:
     """Download the latest copy of the BFI's weekly report
 
     Args:
@@ -37,11 +34,14 @@ def download_latest_file(download_url: str) -> None:
 
     Raises:
         e: an exception which might occur while downloading the file
+
+    Returns:
+        _type_: The original filename
     """
-    logger.info("Downloading file from: " + download_url)
-    global ORIGINAL_FILE
 
     try:
+        logger.info("Downloading file from: " + download_url)
+
         response: requests.Response = requests.get(url=download_url)
 
         # save file using original file extension
@@ -52,8 +52,6 @@ def download_latest_file(download_url: str) -> None:
             "xlsx", file_extension
         )
 
-        ORIGINAL_FILE = download_file_name
-
         with open(file=download_file_name, mode="wb") as spreadsheet_file:
             spreadsheet_file.write(response.content)
 
@@ -63,31 +61,50 @@ def download_latest_file(download_url: str) -> None:
 
         logger.info("File downloaded successfully")
 
+        return download_file_name
+
     except Exception as e:
         logger.error("Error Downloading File")
         logger.error("Error: ", exc_info=True)
         raise e
 
 
-def find_latest_file() -> None:
+def find_latest_file_data() -> tuple:
+    """Scrape the BFI's website to find a link to the latest report 
+
+    Raises:
+        e: _description_
+
+    Returns:
+        tuple: The link to the latest version of the report and
+               the weekend on which it was published
     """
-    Scrape the BFI's website to find a link to the latest report
-    """
-    global WEEKEND_DATE
 
-    response: requests.Response = requests.get(url=constants.BFI_URL)
-    soup: BeautifulSoup = BeautifulSoup(response.text, "html.parser")
-    latestFileLink = soup.find(
-        "a", {"class": re.compile("FileDownload__Link")})
+    try:
+        response: requests.Response = requests.get(url=constants.BFI_URL)
+        soup: BeautifulSoup = BeautifulSoup(response.text, "html.parser")
+        latestFileLink = soup.find(
+            "a",
+            {"class": re.compile("FileDownload__Link")}
+        )
 
-    file_title = soup.find(
-        "span", {"class": re.compile("FileDownload__Title")})
-    WEEKEND_DATE = file_title.text.split("office report: ")[1]
+        file_title = soup.find(
+            "span",
+            {"class": re.compile("FileDownload__Title")}
+        )
 
-    download_latest_file(download_url=latestFileLink.get("href"))
+        return (
+            latestFileLink.get("href"),
+            file_title.text.split("office report: ")[1]
+        )
+
+    except Exception as e:
+        logger.error("Error Finding File Location")
+        logger.error("Error: ", exc_info=True)
+        raise e
 
 
-def send_report(user_name: str, email_address: str):
+def send_report(user_name: str, email_address: str, weekend_date: str):
     """Send email to subscriber with report file attached
 
     Args:
@@ -100,16 +117,17 @@ def send_report(user_name: str, email_address: str):
     try:
         resend.api_key = environ.get("RESEND_API_KEY")
 
-        email_subject = f"BFI Report: {WEEKEND_DATE}"
+        email_subject = f"BFI Report: {weekend_date}"
 
         html_content = helpers.generate_email_body(
-            user_name=user_name, week_number=WEEKEND_DATE
+            user_name=user_name,
+            week_number=weekend_date
         )
 
         with open(constants.PDF_REPORT_LOCATION, "rb") as report_file:
             attachment = list(report_file.read())
 
-        report_filename = WEEKEND_DATE.replace(" ", "_")
+        report_filename = weekend_date.replace(" ", "_")
 
         parameters = {
             "from": environ.get("FROM_EMAIL"),
@@ -136,9 +154,14 @@ def main():
     try:
         logger.info("BFI Report Deliverer Start")
         logger.info("Finding Latest file")
-        find_latest_file()
+        latest_file_link, weekend_date = find_latest_file_data()
+
+        original_filename = download_latest_file(download_url=latest_file_link)
         logger.info("File Download Complete")
-        file_hash: str = helpers.gen_file_hash(original_filename=ORIGINAL_FILE)
+
+        file_hash: str = helpers.gen_file_hash(
+            original_filename=original_filename
+        )
         logger.info(f"File Hash: {file_hash}")
 
         # stop program if file matches previous version
@@ -165,7 +188,7 @@ def main():
             top_15_film_list=top_15_film_list,
             other_uk_film_list=other_uk_film_list,
             other_new_film_list=other_new_film_list,
-            weekend_date=WEEKEND_DATE,
+            weekend_date=weekend_date,
         )
         logger.info("HTML Report Generated")
 
@@ -179,7 +202,8 @@ def main():
             for user in user_list:
                 send_report(
                     user_name=user["first_name"],
-                    email_address=user["email"]
+                    email_address=user["email"],
+                    weekend_date=weekend_date
                 )
 
                 logger.info(
