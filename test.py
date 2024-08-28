@@ -574,6 +574,34 @@ class TestMain(unittest.TestCase):
         self.assertNotRegex(actual_val[1], expected_val[0])
         self.assertNotRegex(actual_val[0], expected_val[1])
 
+    def test_download_latest_file_valid(self):
+        try:
+            delete_file(constants.FILE_DOWNLOAD_LOCATION)
+        except FileNotFoundError:
+            pass
+
+        expected_val = "downloads/latest_report.xls"
+        actual_val = main.download_latest_file(
+            "https://core-cms.bfi.org.uk/media/35623/download"
+        )
+
+        self.assertTrue(does_file_exist(constants.FILE_DOWNLOAD_LOCATION))
+        self.assertTrue(expected_val in actual_val)
+
+    def test_download_latest_file_invalid(self):
+        try:
+            delete_file(constants.FILE_DOWNLOAD_LOCATION)
+        except FileNotFoundError:
+            pass
+
+        expected_val = "downloads/latest_report.xls"
+        actual_val = main.download_latest_file(
+            "https://core-cms.bfi.org.uk/media/35623/download"
+        )
+
+        self.assertTrue(does_file_exist(constants.FILE_DOWNLOAD_LOCATION))
+        self.assertTrue(expected_val in actual_val)
+
 
 if __name__ == "__main__":
     unittest.main()
