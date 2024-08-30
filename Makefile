@@ -9,4 +9,4 @@ setup:
 	python3 setup.py
 
 test:
-	python3 -m unittest -v test
+	.venv/bin/python3 -m unittest -v test
