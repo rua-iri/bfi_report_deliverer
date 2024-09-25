@@ -1,12 +1,12 @@
 import logging
 import re
+import time
 import traceback
 import requests
 import resend
 from bs4 import BeautifulSoup
 from os import environ
 from dotenv import load_dotenv
-import time
 
 from bfi_report_deliverer import helpers
 from bfi_report_deliverer import constants

@@ -1,12 +1,12 @@
-from hashlib import md5 as md5_hash
 import json
-from os import environ
-from time import time as unix_timestamp
 import openpyxl
 import pdfkit
 import sqlite3
 import jinja2
 import requests
+from os import environ
+from hashlib import md5 as md5_hash
+from time import time as unix_timestamp
 from dotenv import load_dotenv
 
 from . import constants
@@ -246,18 +246,6 @@ def generate_email_body(user_name: str, week_number: str) -> str:
 
     email_template = jinja_environment.get_template("email.html")
     return email_template.render(user_name=user_name, week_number=week_number)
-
-
-def create_db():
-    """Create users & files table in database
-    (should only run on initialising repository)
-    """
-    cursor = con.cursor()
-    res = cursor.execute(queries.CREATE_USERS_TABLE_QUERY)
-    res.fetchall()
-    cursor = con.cursor()
-    res = cursor.execute(queries.CREATE_FILES_TABLE_QUERY)
-    res.fetchall()
 
 
 def gen_file_hash(original_filename: str) -> str:
