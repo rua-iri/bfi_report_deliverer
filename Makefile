@@ -1,4 +1,5 @@
 
+python=.venv/bin/python3
 
 setup:
 	if [ ! -d  reports/ ]; then\
@@ -10,3 +11,7 @@ setup:
 
 test:
 	.venv/bin/python3 -m unittest -v test
+
+run:
+	.venv/bin/python3 main.py
+
