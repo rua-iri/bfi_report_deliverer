@@ -4,11 +4,12 @@ import traceback
 import requests
 import resend
 from bs4 import BeautifulSoup
-import constants
-import helpers
 from os import environ
 from dotenv import load_dotenv
 import time
+
+from bfi_report_deliverer import helpers
+from bfi_report_deliverer import constants
 
 LOGGING_FILE = constants.LOGGING_FILENAME.format(
     filename=time.strftime("%Y-%m-%d")
@@ -167,7 +168,7 @@ def main():
 
         # stop program if file matches previous version
         # if IS_PROD and not helpers.is_file_new(file_hash):
-        if not helpers.is_file_new(file_hash):
+        if not helpers.is_file_new(file_hash) and IS_PROD:
             logger.error("File hash matches previous file")
             logger.info("Exiting...")
             return

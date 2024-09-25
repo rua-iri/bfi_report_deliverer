@@ -1,10 +1,11 @@
 import unittest
-from classes import Film
-import helpers
-import constants
-import main
 from os.path import exists as does_file_exist
 from os import remove as delete_file
+
+from bfi_report_deliverer.classes import Film
+from bfi_report_deliverer import helpers
+from bfi_report_deliverer import constants
+from bfi_report_deliverer import main
 
 
 class TestHelpers(unittest.TestCase):

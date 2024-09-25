@@ -1,5 +1,5 @@
 from typing import Union
-from constants import TMDB_IMG_URL, IMDB_URL
+from .constants import TMDB_IMG_URL, IMDB_URL
 
 
 class Film:

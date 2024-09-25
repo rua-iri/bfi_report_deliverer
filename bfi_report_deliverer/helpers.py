@@ -3,15 +3,16 @@ import json
 from os import environ
 from time import time as unix_timestamp
 import openpyxl
-import constants
-import queries
 import pdfkit
 import sqlite3
 import jinja2
 import requests
 from dotenv import load_dotenv
-from classes import Film
-from mapping import (
+
+from . import constants
+from . import queries
+from .classes import Film
+from .mapping import (
     RANK,
     TITLE,
     ORIGIN_COUNTRY,
