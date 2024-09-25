@@ -37,7 +37,7 @@ class Film:
         if film_data.get("poster"):
             self.poster = TMDB_IMG_URL.format(filename=film_data["poster"])
         else:
-            self.poster = "https://www.bfi.org.uk/favicon.ico"
+            self.poster = "https://rua-iri.com/images/bfi/bfi_logo.png"
 
         if film_data.get("imdb_id"):
             self.imdb = IMDB_URL.format(id=film_data["imdb_id"])

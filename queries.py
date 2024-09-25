@@ -1,9 +1,3 @@
-SELECT_USERS_QUERY = """
-SELECT *
-FROM users
-WHERE is_active = TRUE;
-"""
-
 CREATE_USERS_TABLE_QUERY = """
 CREATE TABLE "users" (
 "id"	INTEGER,
@@ -22,6 +16,13 @@ CREATE TABLE "files" (
 "timestamp"	INTEGER,
 PRIMARY KEY("id" AUTOINCREMENT)
 );
+"""
+
+
+SELECT_USERS_QUERY = """
+SELECT *
+FROM users
+WHERE is_active = TRUE;
 """
 
 SELECT_FILES_QUERY = """SELECT *
