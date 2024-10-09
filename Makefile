@@ -1,5 +1,7 @@
 
-python=.venv/bin/python3
+VENV = .venv
+PYTHON = $(VENV)/bin/python3
+PIP = $(VENV)/bin/pip3
 
 setup:
 	if [ ! -d  reports/ ]; then\
@@ -9,9 +11,9 @@ setup:
 	fi &&\
 	python3 setup.py
 
-test:
-	.venv/bin/python3 -m unittest -v test
+unittest:
+	$(PYTHON) -m unittest -v test.test
 
 run:
-	.venv/bin/python3 main.py
+	$(PYTHON) main.py
 
