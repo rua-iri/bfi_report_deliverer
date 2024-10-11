@@ -6,8 +6,6 @@ PIP = $(VENV)/bin/pip3
 setup:
 	python3 -m venv $(VENV)
 
-	source $(VENV)/bin/activate
-
 	$(PIP) install -r requirements.txt
 
 	sudo apt install wkhtmltopdf
