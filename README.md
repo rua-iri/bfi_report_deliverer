@@ -47,7 +47,7 @@ make run
 ### Run tests
 
 ```bash
-make test
+make unittest
 ```
 
 ## Examples
