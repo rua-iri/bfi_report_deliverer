@@ -5,7 +5,7 @@ from os import remove as delete_file
 from bfi_report_deliverer.classes import Film
 from bfi_report_deliverer import helpers
 from bfi_report_deliverer import constants
-from bfi_report_deliverer import main
+from bfi_report_deliverer import report_deliverer
 
 
 class TestHelpers(unittest.TestCase):
@@ -539,7 +539,7 @@ class TestHelpers(unittest.TestCase):
         self.assertEqual(expected_val, actual_val)
 
 
-class TestMain(unittest.TestCase):
+class TestReportDeliverer(unittest.TestCase):
 
     def __init__(self, methodName: str = "runTest") -> None:
         super().__init__(methodName)
@@ -549,7 +549,7 @@ class TestMain(unittest.TestCase):
             "https://core-cms.bfi.org.uk/media/.*/download",
             "\d+-\d+ \w+ \d{4}"
         )
-        actual_val = main.find_latest_file_data()
+        actual_val = report_deliverer.find_latest_file_data()
 
         self.assertRegex(actual_val[0], expected_val[0])
         self.assertRegex(actual_val[1], expected_val[1])
@@ -559,7 +559,7 @@ class TestMain(unittest.TestCase):
             "https://core-cms.bfi.org.uk/media/.*/download",
             "\d+-\d+ \w+ \d{4}"
         )
-        actual_val = main.find_latest_file_data()
+        actual_val = report_deliverer.find_latest_file_data()
 
         self.assertNotRegex(actual_val[1], expected_val[0])
         self.assertNotRegex(actual_val[0], expected_val[1])
@@ -571,7 +571,7 @@ class TestMain(unittest.TestCase):
             pass
 
         expected_val = "downloads/latest_report.xls"
-        actual_val = main.download_latest_file(
+        actual_val = report_deliverer.download_latest_file(
             "https://core-cms.bfi.org.uk/media/35623/download"
         )
 
@@ -585,7 +585,7 @@ class TestMain(unittest.TestCase):
             pass
 
         expected_val = "downloads/latest_report.xls"
-        actual_val = main.download_latest_file(
+        actual_val = report_deliverer.download_latest_file(
             "https://core-cms.bfi.org.uk/media/35623/download"
         )
 

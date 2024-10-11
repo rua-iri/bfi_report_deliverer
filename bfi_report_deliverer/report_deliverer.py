@@ -214,11 +214,8 @@ def main():
 
             logger.info("Reports Sent")
 
+        logger.info("Execution Completed")
+
     except Exception as e:
         logger.error(e)
         logger.error(traceback.format_exc())
-
-
-if __name__ == "__main__":
-    main()
-    logger.info("Execution Completed")
