@@ -126,6 +126,7 @@ def send_report(user_name: str, email_address: str, weekend_date: str):
             week_number=weekend_date
         )
 
+        helpers.create_dir(constants.PDF_REPORT_LOCATION)
         with open(constants.PDF_REPORT_LOCATION, "rb") as report_file:
             attachment = list(report_file.read())
 

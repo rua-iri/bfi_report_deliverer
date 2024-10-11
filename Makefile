@@ -4,11 +4,14 @@ PYTHON = $(VENV)/bin/python3
 PIP = $(VENV)/bin/pip3
 
 setup:
-	if [ ! -d  reports/ ]; then\
-		mkdir reports/\
-	else\
-		printf "reports/ already exists\n\n";\
-	fi &&\
+	python3 -m venv $(VENV)
+
+	source $(VENV)/bin/activate
+
+	$(PIP) install -r requirements.txt
+
+	sudo apt install wkhtmltopdf
+	
 	python3 setup.py
 
 unittest:

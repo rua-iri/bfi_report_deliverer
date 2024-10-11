@@ -462,6 +462,7 @@ class TestHelpers(unittest.TestCase):
             "28-30 June 2024"
         )
 
+        helpers.create_dir("reports/report.html")
         with open("reports/report.html") as file:
             actual_val = file.read()
 
@@ -533,6 +534,7 @@ class TestHelpers(unittest.TestCase):
 
         helpers.generate_html_report([], [], [], "28-30 June 2024")
 
+        helpers.create_dir("reports/report.html")
         with open("reports/report.html") as file:
             actual_val = file.read()
 

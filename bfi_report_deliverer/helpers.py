@@ -4,7 +4,8 @@ import pdfkit
 import sqlite3
 import jinja2
 import requests
-from os import environ
+from os import environ, makedirs
+from os.path import dirname
 from hashlib import md5 as md5_hash
 from time import time as unix_timestamp
 from dotenv import load_dotenv
@@ -36,6 +37,13 @@ con.row_factory = sqlite3.Row
 
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader("templates"))
+
+
+def create_dir(file_path):
+    makedirs(
+        dirname(file_path),
+        exist_ok=True
+    )
 
 
 def fetch_film_data(film: Film) -> dict:
@@ -194,6 +202,7 @@ def generate_html_report(
     other_new_contents = render_html(other_new_film_list)
 
     # write content to html
+    create_dir(constants.HTML_REPORT_LOCATION)
     with open(constants.HTML_REPORT_LOCATION, "w") as file:
         file.write(
             base_html.render(
@@ -209,6 +218,7 @@ def generate_pdf_report() -> None:
     """Generate the new pdf report using the html template
     """
     try:
+        create_dir(constants.HTML_REPORT_LOCATION)
         pdfkit.from_file(
             input=constants.HTML_REPORT_LOCATION,
             output_path=constants.PDF_REPORT_LOCATION
