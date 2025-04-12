@@ -11,7 +11,10 @@ from time import time as unix_timestamp
 from dotenv import load_dotenv
 
 from . import constants
-from . import queries
+from .queries import (SELECT_USERS_QUERY,
+                      SELECT_FILES_QUERY,
+                      INSERT_FILE_QUERY
+                      )
 from .classes import Film
 from .mapping import (
     RANK,
@@ -236,7 +239,7 @@ def get_subscribers() -> list:
     """
     cursor = con.cursor()
     res = cursor.execute(
-        queries.SELECT_USERS_QUERY,
+        SELECT_USERS_QUERY,
     )
     user_list = res.fetchall()
 
@@ -288,14 +291,14 @@ def is_file_new(file_hash: str) -> bool:
     """
 
     cursor = con.cursor()
-    result = cursor.execute(queries.SELECT_FILES_QUERY,
+    result = cursor.execute(SELECT_FILES_QUERY,
                             (file_hash,)).fetchall()
     print(result)
     print(not result)
 
     timestamp = int(unix_timestamp())
 
-    cursor.execute(queries.INSERT_FILE_QUERY, (file_hash, timestamp))
+    cursor.execute(INSERT_FILE_QUERY, (file_hash, timestamp))
     con.commit()
 
     if len(result) == 0:
