@@ -23,7 +23,7 @@ cd bfi_report_deliverer
 ### Run Setup - Create virtual environment and install requirements
 
 ```bash
-make setup
+./scripts/install.sh
 ```
 
 ### Create .env file with the following variables
@@ -41,13 +41,13 @@ TMBD_API_KEY=<API_KEY>
 ### Run program
 
 ```bash
-make run
+./scripts/run.sh
 ```
 
 ### Run tests
 
 ```bash
-make unittest
+./scripts/test.sh
 ```
 
 ## Examples
