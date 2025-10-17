@@ -62,7 +62,7 @@ def fetch_film_data(film: Film) -> dict:
         constants.TMDB_SEARCH_API_URL.format(query=film.title.split("(")[0]),
         headers={
             "accept": "application/json",
-            "Authorization": environ.get("TMBD_API_KEY"),
+            "Authorization": f"Bearer {environ.get("TMBD_API_KEY")}",
         },
     )
 
@@ -77,7 +77,7 @@ def fetch_film_data(film: Film) -> dict:
         constants.TMDB_DETAILS_API_URL.format(id=film_id),
         headers={
             "accept": "application/json",
-            "Authorization": environ.get("TMBD_API_KEY"),
+            "Authorization": f"Bearer {environ.get("TMBD_API_KEY")}",
         },
     )
 
