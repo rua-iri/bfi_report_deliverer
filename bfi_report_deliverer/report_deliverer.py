@@ -46,7 +46,13 @@ def download_latest_file(download_url: str) -> str:
         response: requests.Response = requests.get(url=download_url)
 
         # save file using original file extension
-        content_disposition: str = response.headers.get("Content-Disposition")
+        content_disposition: str | None = response.headers.get(
+            "Content-Disposition"
+        )
+
+        if not content_disposition:
+            raise Exception("Content-Disposition not found")
+
         file_extension_loc: int = content_disposition.find(".xls") + 1
         file_extension: str = content_disposition[file_extension_loc:]
         download_file_name: str = constants.FILE_DOWNLOAD_LOCATION.replace(
@@ -94,6 +100,9 @@ def find_latest_file_data() -> tuple:
             "span",
             {"class": re.compile("FileDownload__Title")}
         )
+
+        if not latestFileLink or not file_title:
+            raise Exception("Unable to find file")
 
         return (
             latestFileLink.get("href"),
@@ -172,7 +181,7 @@ def main():
         if not helpers.is_file_new(file_hash) and IS_PROD:
             logger.error("File hash matches previous file")
             logger.info("Exiting...")
-            return
+            raise Exception("File has been processed previously")
 
         logger.info("File hash does not match previous file")
 

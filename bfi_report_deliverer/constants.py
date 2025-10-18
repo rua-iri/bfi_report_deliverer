@@ -2,7 +2,11 @@ LOGGING_FORMAT = "[%(asctime)s] [%(levelname)s] - %(message)s"
 LOGGING_FILENAME = "logs/{filename}.log"
 LOGGING_SEPARATOR = "-------------------------\n"
 
-BFI_URL = "https://www.bfi.org.uk/industry-data-insights/weekend-box-office-figures"
+BFI_URL = (
+    "https://www.bfi.org.uk/"
+    "industry-data-insights/"
+    "weekend-box-office-figures"
+)
 
 FILE_DOWNLOAD_LOCATION = "downloads/latest_report.xlsx"
 
