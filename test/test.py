@@ -131,7 +131,7 @@ class TestReportDeliverer(unittest.TestCase):
     def test_find_latest_file_data_valid(self):
         expected_val = (
             "https://core-cms.bfi.org.uk/media/.*/download",
-            "\d+-\d+ \w+ \d{4}"
+            "\d+ to \d+ \w+ \d{4}"
         )
         actual_val = report_deliverer.find_latest_file_data()
 
