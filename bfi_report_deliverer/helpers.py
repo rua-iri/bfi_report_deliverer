@@ -1,6 +1,6 @@
 import json
 import openpyxl
-import pdfkit
+import weasyprint
 import sqlite3
 import jinja2
 import requests
@@ -222,10 +222,8 @@ def generate_pdf_report() -> None:
     """
     try:
         create_dir(constants.HTML_REPORT_LOCATION)
-        pdfkit.from_file(
-            input=constants.HTML_REPORT_LOCATION,
-            output_path=constants.PDF_REPORT_LOCATION
-        )
+        weasyprint.HTML(filename=constants.HTML_REPORT_LOCATION).write_pdf(
+            constants.PDF_REPORT_LOCATION)
 
     except Exception as e:
         raise e

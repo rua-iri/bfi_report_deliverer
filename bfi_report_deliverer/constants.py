@@ -23,7 +23,7 @@ CARD_TEMPLATE = "card.html"
 HTML_REPORT_LOCATION = "reports/report.html"
 PDF_REPORT_LOCATION = "reports/report.pdf"
 
-HTML_PAGE_BREAK = "<div style='page-break-after: always;'></div>"
+HTML_PAGE_BREAK = "<div style='break-after: always;'></div>"
 
 TMDB_SEARCH_API_URL = "https://api.themoviedb.org/3/search/movie?query={query}"
 TMDB_DETAILS_API_URL = "https://api.themoviedb.org/3/movie/{id}"

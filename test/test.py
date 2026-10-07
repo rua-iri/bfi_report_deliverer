@@ -81,7 +81,7 @@ class TestHelpers(unittest.TestCase):
         self.assertEqual(actual_val, expected_val)
 
     def test_render_html_empty(self):
-        expected_val = "<div style='page-break-after: always;'></div>"
+        expected_val = "<div style='break-after: always;'></div>"
         actual_val = helpers.render_html([])
 
         self.assertEqual(actual_val, expected_val)
