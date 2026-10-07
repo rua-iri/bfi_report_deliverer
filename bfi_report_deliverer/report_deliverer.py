@@ -53,7 +53,7 @@ def download_latest_file(download_url: str) -> str:
         if not content_disposition:
             raise Exception("Content-Disposition not found")
 
-        file_extension_loc: int = content_disposition.find(".xls") + 1
+        file_extension_loc: int = content_disposition.find(".ods") + 1
         file_extension: str = content_disposition[file_extension_loc:]
         download_file_name: str = constants.FILE_DOWNLOAD_LOCATION.replace(
             "xlsx", file_extension
@@ -62,7 +62,7 @@ def download_latest_file(download_url: str) -> str:
         with open(file=download_file_name, mode="wb") as spreadsheet_file:
             spreadsheet_file.write(response.content)
 
-        if file_extension == "xls":
+        if file_extension != "xlsx":
             logger.info("Converting to xlsx format")
             helpers.convert_to_xlsx(download_file_name)
 
@@ -115,7 +115,23 @@ def find_latest_file_data() -> tuple:
         raise e
 
 
-def send_report(user_name: str, email_address: str, weekend_date: str):
+def send_reports(user_list: list, weekend_date: str):
+    if IS_PROD:
+        for user in user_list:
+            send_report_to_user(
+                user_name=user["first_name"],
+                email_address=user["email"],
+                weekend_date=weekend_date
+            )
+
+            logger.info(
+                f"Report Sent to {user['first_name']} {user['last_name']}"
+            )
+
+        logger.info("Reports Sent")
+
+
+def send_report_to_user(user_name: str, email_address: str, weekend_date: str):
     """Send email to subscriber with report file attached
 
     Args:
@@ -141,8 +157,8 @@ def send_report(user_name: str, email_address: str, weekend_date: str):
 
         report_filename = weekend_date.replace(" ", "_")
 
-        parameters = {
-            "from": environ.get("FROM_EMAIL"),
+        parameters: resend.Emails.SendParams = {
+            "from": environ.get("FROM_EMAIL", ""),
             "to": [email_address],
             "subject": email_subject,
             "html": html_content,
@@ -182,8 +198,8 @@ def main():
             logger.error("File hash matches previous file")
             logger.info("Exiting...")
             raise Exception("File has been processed previously")
-
-        logger.info("File hash does not match previous file")
+        elif IS_PROD:
+            logger.info("File hash does not match previous file")
 
         # parse each group of films
         logger.info("Parsing: top_15")
@@ -193,7 +209,8 @@ def main():
         other_uk_film_list = helpers.parse_films("other_uk")
 
         logger.info("Parsing: other_new")
-        other_new_film_list = helpers.parse_films("other_new")
+        other_new_film_list = helpers.parse_films(
+            "other_new")
 
         # generate html report and convert to pdf
         helpers.generate_html_report(
@@ -210,19 +227,7 @@ def main():
         user_list = helpers.get_subscribers()
         logger.info("User List Generated")
 
-        if IS_PROD:
-            for user in user_list:
-                send_report(
-                    user_name=user["first_name"],
-                    email_address=user["email"],
-                    weekend_date=weekend_date
-                )
-
-                logger.info(
-                    f"Report Sent to {user['first_name']} {user['last_name']}"
-                )
-
-            logger.info("Reports Sent")
+        send_reports(user_list, weekend_date)
 
         logger.info("Execution Completed")
 
