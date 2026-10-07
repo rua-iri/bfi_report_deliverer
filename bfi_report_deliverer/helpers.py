@@ -11,10 +11,11 @@ from time import time as unix_timestamp
 from dotenv import load_dotenv
 
 from . import constants
-from .queries import (SELECT_USERS_QUERY,
-                      SELECT_FILES_QUERY,
-                      INSERT_FILE_QUERY
-                      )
+from .queries import (
+    SELECT_USERS_QUERY,
+    SELECT_FILES_QUERY,
+    INSERT_FILE_QUERY
+)
 from .classes import Film
 from .mapping import (
     RANK,
@@ -161,23 +162,11 @@ def parse_films(
 def render_html(film_list: list) -> str:
     card_html = jinja_environment.get_template(constants.CARD_TEMPLATE)
     film_list_contents: str = ""
-    page_count: int = 0
-    film_on_page_count: int = 0
 
     # cards and append them to complete table string
     for film in film_list:
         card = card_html.render(film.__dict__)
         film_list_contents += card
-
-        film_on_page_count += 1
-        if page_count > 0 and film_on_page_count == 4:
-            film_list_contents += constants.HTML_PAGE_BREAK
-            film_on_page_count = 0
-            page_count += 1
-        elif page_count == 0 and film_on_page_count == 3:
-            film_list_contents += constants.HTML_PAGE_BREAK
-            film_on_page_count = 0
-            page_count += 1
 
     film_list_contents += constants.HTML_PAGE_BREAK
 

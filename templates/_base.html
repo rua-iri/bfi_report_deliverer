@@ -11,6 +11,10 @@
         body {
             font-family: sans-serif;
         }
+        @media print {
+            .card {break-inside: avoid; font-size: small;}
+            h2 {break-after: avoid;}
+        }
     </style>
 </head>
 
