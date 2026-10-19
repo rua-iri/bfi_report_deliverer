@@ -1,4 +1,5 @@
 from enum import IntEnum
+from datetime import datetime
 
 LOGGING_FORMAT = "[%(asctime)s] [%(levelname)s] - %(message)s"
 LOGGING_FILENAME = "logs/{filename}.log"
@@ -23,7 +24,7 @@ TOP_15_MAX = 17
 BASE_HTML_TEMPLATE = "_base.html"
 CARD_TEMPLATE = "card.html"
 HTML_REPORT_LOCATION = "reports/report.html"
-PDF_REPORT_LOCATION = "reports/report.pdf"
+PDF_REPORT_LOCATION = f"reports/report_{datetime.now().date().isoformat()}.pdf"
 
 HTML_PAGE_BREAK = "<div style='break-after: always;'></div>"
 
