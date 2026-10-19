@@ -1,3 +1,5 @@
+from enum import IntEnum
+
 LOGGING_FORMAT = "[%(asctime)s] [%(levelname)s] - %(message)s"
 LOGGING_FILENAME = "logs/{filename}.log"
 LOGGING_SEPARATOR = "-------------------------\n"
@@ -30,3 +32,16 @@ TMDB_DETAILS_API_URL = "https://api.themoviedb.org/3/movie/{id}"
 
 TMDB_IMG_URL = "https://image.tmdb.org/t/p/w200{filename}"
 IMDB_URL = "https://www.imdb.com/title/{id}"
+
+
+class ReportColumnIndex(IntEnum):
+    RANK = 0
+    TITLE = 1
+    ORIGIN_COUNTRY = 2
+    WEEKEND_GROSS = 3
+    DISTRIBUTOR = 4
+    WEEKLY_CHANGE = 5
+    WEEKS_ON_RELEASE = 6
+    CINEMA_NUMBER = 7
+    SITE_AVERAGE = 8
+    TOTAL_GROSS = 9

@@ -9,6 +9,7 @@ from os.path import dirname
 from hashlib import md5 as md5_hash
 from time import time as unix_timestamp
 from dotenv import load_dotenv
+from typing import cast
 
 from . import constants
 from .queries import (
@@ -17,18 +18,6 @@ from .queries import (
     INSERT_FILE_QUERY
 )
 from .classes import Film
-from .mapping import (
-    RANK,
-    TITLE,
-    ORIGIN_COUNTRY,
-    WEEKEND_GROSS,
-    DISTRIBUTOR,
-    WEEKLY_CHANGE,
-    WEEKS_ON_RELEASE,
-    CINEMA_NUMBER,
-    SITE_AVERAGE,
-    TOTAL_GROSS,
-)
 
 
 other_uk_row: list = [22]
@@ -138,22 +127,32 @@ def parse_films(
         )
     ):
 
-        if row[RANK] is None:
+        if row[constants.ReportColumnIndex.RANK.value] is None:
             if film_group == "other_uk":
                 other_uk_row.append(index + other_uk_row[0])
             break
 
         film = Film(
-            rank=row[RANK],
-            title=row[TITLE],
-            origin_country=row[ORIGIN_COUNTRY],
-            weekend_gross=row[WEEKEND_GROSS],
-            distributor=row[DISTRIBUTOR],
-            weekly_change=row[WEEKLY_CHANGE],
-            weeks_on_release=row[WEEKS_ON_RELEASE],
-            cinema_number=row[CINEMA_NUMBER],
-            site_average=row[SITE_AVERAGE],
-            total_gross=row[TOTAL_GROSS],
+            rank=cast(
+                int, row[constants.ReportColumnIndex.RANK.value]),
+            title=cast(
+                str, row[constants.ReportColumnIndex.TITLE.value]),
+            origin_country=cast(
+                str, row[constants.ReportColumnIndex.ORIGIN_COUNTRY.value]),
+            weekend_gross=cast(
+                int, row[constants.ReportColumnIndex.WEEKEND_GROSS.value]),
+            distributor=cast(
+                str, row[constants.ReportColumnIndex.DISTRIBUTOR.value]),
+            weekly_change=cast(
+                int, row[constants.ReportColumnIndex.WEEKLY_CHANGE.value]),
+            weeks_on_release=cast(
+                int, row[constants.ReportColumnIndex.WEEKS_ON_RELEASE.value]),
+            cinema_number=cast(
+                int, row[constants.ReportColumnIndex.CINEMA_NUMBER.value]),
+            site_average=cast(
+                int, row[constants.ReportColumnIndex.SITE_AVERAGE.value]),
+            total_gross=cast(
+                int, row[constants.ReportColumnIndex.TOTAL_GROSS.value]),
         )
         film_data = fetch_film_data(film)
         film.set_film_data(film_data)
