@@ -113,6 +113,9 @@ def parse_films(
         data_only=True
     ).active
 
+    if not sheet:
+        raise Exception("Sheet failed to open")
+
     if film_group == "top_15":
         MIN_ROW = constants.TOP_15_MIN
         MAX_ROW = constants.TOP_15_MAX
@@ -305,18 +308,14 @@ def initialise_logs(file_name: str) -> None:
 
 
 def convert_to_xlsx(file_path: str):
-    """Convert spreadsheet from xls format to xlsx so that it can be read
+    """Convert spreadsheet from xls/ods format to xlsx so that it can be read
 
     Args:
-        file_path (str): the path to the xls file
+        file_path (str): the path to the xls/ods file
     """
-    import pandas
+    import pyexcel
 
-    df = pandas.read_excel(file_path)
-
-    with pandas.ExcelWriter(
-        constants.FILE_DOWNLOAD_LOCATION,
-        mode="w",
-        engine="openpyxl"
-    ) as xlsx:
-        df.to_excel(xlsx, index=False)
+    pyexcel.save_as(
+        file_name=file_path,
+        dest_file_name=constants.FILE_DOWNLOAD_LOCATION
+    )
