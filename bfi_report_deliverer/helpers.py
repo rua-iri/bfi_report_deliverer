@@ -1,10 +1,8 @@
-import json
 import openpyxl
 import weasyprint
 import sqlite3
 import jinja2
-import requests
-from os import environ, makedirs
+from os import makedirs
 from os.path import dirname
 from hashlib import md5 as md5_hash
 from time import time as unix_timestamp
@@ -37,46 +35,6 @@ def create_dir(file_path):
         dirname(file_path),
         exist_ok=True
     )
-
-
-def fetch_film_data(film: Film) -> dict:
-    """Fetch film data from TMDB api
-
-    Args:
-        film (Film): an instance of the Film class
-
-    Returns:
-        dict: a dictionary containing detailed information about the film
-    """
-    response = requests.get(
-        constants.TMDB_SEARCH_API_URL.format(query=film.title.split("(")[0]),
-        headers={
-            "accept": "application/json",
-            "Authorization": f"Bearer {environ.get("TMBD_API_KEY")}",
-        },
-    )
-
-    film_data = json.loads(response.text)
-
-    if film_data["total_results"] == 0:
-        return {}
-
-    film_id = film_data["results"][0]["id"]
-
-    response = requests.get(
-        constants.TMDB_DETAILS_API_URL.format(id=film_id),
-        headers={
-            "accept": "application/json",
-            "Authorization": f"Bearer {environ.get("TMBD_API_KEY")}",
-        },
-    )
-
-    film_data = json.loads(response.text)
-
-    return {
-        "poster": film_data["poster_path"],
-        "imdb_id": film_data["imdb_id"]
-    }
 
 
 def parse_films(
@@ -154,8 +112,8 @@ def parse_films(
             total_gross=cast(
                 int, row[constants.ReportColumnIndex.TOTAL_GROSS.value]),
         )
-        film_data = fetch_film_data(film)
-        film.set_film_data(film_data)
+
+        film.set_film_data()
         film_list.append(film)
 
     return film_list
@@ -233,21 +191,6 @@ def get_subscribers() -> list:
     user_list = res.fetchall()
 
     return user_list
-
-
-def generate_email_body(user_name: str, week_number: str) -> str:
-    """Generate the body of the email to be sent to subscribers
-
-    Args:
-        user_name (str): The user to whom the email will be sent
-        week_number (str): The date of the previous weekend
-
-    Returns:
-        str: html content of the email
-    """
-
-    email_template = jinja_environment.get_template("email.html")
-    return email_template.render(user_name=user_name, week_number=week_number)
 
 
 def gen_file_hash(original_filename: str) -> str:

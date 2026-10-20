@@ -3,13 +3,13 @@ import re
 import time
 import traceback
 import requests
-import resend
 from bs4 import BeautifulSoup
 from os import environ
 from dotenv import load_dotenv
 
 from bfi_report_deliverer import helpers
 from bfi_report_deliverer import constants
+from bfi_report_deliverer.classes import ReportsSender
 
 LOGGING_FILE = constants.LOGGING_FILENAME.format(
     filename=time.strftime("%Y-%m-%d")
@@ -115,69 +115,6 @@ def find_latest_file_data() -> tuple:
         raise e
 
 
-def send_reports(user_list: list, weekend_date: str):
-    if IS_PROD:
-        for user in user_list:
-            send_report_to_user(
-                user_name=user["first_name"],
-                email_address=user["email"],
-                weekend_date=weekend_date
-            )
-
-            logger.info(
-                f"Report Sent to {user['first_name']} {user['last_name']}"
-            )
-
-        logger.info("Reports Sent")
-
-
-def send_report_to_user(user_name: str, email_address: str, weekend_date: str):
-    """Send email to subscriber with report file attached
-
-    Args:
-        user_name (str): the name of the user
-        email_address (str): the email address of the user
-
-    Raises:
-        e: exception which might occur while sending the email
-    """
-    try:
-        resend.api_key = environ.get("RESEND_API_KEY")
-
-        email_subject = f"BFI Report: {weekend_date}"
-
-        html_content = helpers.generate_email_body(
-            user_name=user_name,
-            week_number=weekend_date
-        )
-
-        helpers.create_dir(constants.PDF_REPORT_LOCATION)
-        with open(constants.PDF_REPORT_LOCATION, "rb") as report_file:
-            attachment = list(report_file.read())
-
-        report_filename = weekend_date.replace(" ", "_")
-
-        parameters: resend.Emails.SendParams = {
-            "from": environ.get("FROM_EMAIL", ""),
-            "to": [email_address],
-            "subject": email_subject,
-            "html": html_content,
-            "attachments": [
-                {
-                    "filename": f"{report_filename}_report.pdf",
-                    "content": attachment
-                }
-            ],
-        }
-
-        email = resend.Emails.send(params=parameters)
-        logger.info(email)
-
-    except Exception as e:
-        logger.error("Error in sending report")
-        raise e
-
-
 def main():
     try:
         logger.info("BFI Report Deliverer Start")
@@ -227,7 +164,8 @@ def main():
         user_list = helpers.get_subscribers()
         logger.info("User List Generated")
 
-        send_reports(user_list, weekend_date)
+        reportsSender = ReportsSender(user_list, weekend_date)
+        reportsSender.send_reports()
 
         logger.info("Execution Completed")
 
